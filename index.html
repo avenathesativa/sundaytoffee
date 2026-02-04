@@ -81,9 +81,8 @@
         }
 
         .hero-sketch {
-            width: 180px;
-            margin: 0 auto 2rem;
-            opacity: 0.85;
+            width: 320px;
+            margin: 0 auto 2.5rem;
         }
 
         .hero h1 {
@@ -151,22 +150,19 @@
             margin-bottom: 2.5rem;
         }
 
-        /* Photo Gallery - Simple Two Column */
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
+        /* Photo - Single Centered */
+        .product-photo {
+            text-align: center;
         }
 
-        .gallery img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
+        .product-photo img {
+            max-width: 100%;
+            width: 600px;
             border-radius: 8px;
             transition: transform 0.2s ease;
         }
 
-        .gallery img:hover {
+        .product-photo img:hover {
             transform: scale(1.02);
         }
 
@@ -190,18 +186,11 @@
             font-size: 0.95rem;
         }
 
-        .valentine-photos {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-bottom: 2rem;
-        }
-
-        .valentine-photos img {
-            width: 180px;
-            height: 220px;
-            object-fit: cover;
+        .valentines img {
+            max-width: 100%;
+            width: 450px;
             border-radius: 8px;
+            margin-bottom: 2rem;
         }
 
         .btn-valentine {
@@ -319,24 +308,6 @@
                 font-size: 0.8rem;
             }
 
-            .gallery {
-                grid-template-columns: 1fr;
-            }
-
-            .gallery img {
-                height: 250px;
-            }
-
-            .valentine-photos {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .valentine-photos img {
-                width: 100%;
-                max-width: 280px;
-            }
-
             .valentines {
                 margin: 2rem 1rem;
                 padding: 2rem;
@@ -378,7 +349,7 @@
 
     <section class="hero">
         <div class="hero-content fade-in">
-            <img src="images/toffee-sketch.svg" alt="Hand-drawn toffee illustration" class="hero-sketch">
+            <img src="images/sketch.png" alt="Hand-drawn illustration of toffee boxes" class="hero-sketch">
             <h1>Small batch toffee, made by hand.</h1>
             <p>Just butter, sugar, and a little bit of love. Nothing fancy, just really good toffee.</p>
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSculbQTogG3rsvyek9PVxQLG4IogGQy1Vq278us7vbZK3o0gw/viewform" class="btn btn-primary" target="_blank">order some</a>
@@ -390,19 +361,16 @@
         <h2 class="section-title fade-in">what i make</h2>
         <p class="section-subtitle fade-in">Simple recipes, quality ingredients.</p>
 
-        <div class="gallery fade-in">
-            <img src="images/IMG_7319.jpg" alt="Sunday Toffee - open box showing toffee pieces next to wrapped gift box">
-            <img src="images/IMG_7317-f9723a45.jpg" alt="Close-up of chocolate almond toffee in kraft box">
+        <div class="product-photo fade-in">
+            <img src="images/brown-box.png" alt="Sunday Toffee - open box showing chocolate almond toffee pieces">
         </div>
     </section>
 
     <div class="valentines fade-in">
         <h2 class="section-title">valentine's day</h2>
         <p>Pre-orders are open for Valentine's Day. Get something sweet for someone sweet.</p>
-        <div class="valentine-photos">
-            <img src="images/IMG_7727.jpg" alt="Valentine's Day toffee boxes with heart windows">
-            <img src="images/IMG_7720.jpg" alt="Pink, red, and white Valentine's toffee boxes">
-        </div>
+        <img src="images/vday-1.png" alt="Valentine's Day toffee boxes in pink, red, and white with heart windows">
+        <br>
         <a href="https://forms.gle/CH11WPxwTuJB5h579" class="btn btn-valentine" target="_blank">pre-order for valentine's</a>
     </div>
 
