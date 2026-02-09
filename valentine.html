@@ -759,7 +759,6 @@
                 if (GOOGLE_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbwT-mQefx2FonndoDe81zB0WGZJAh3A-s0Cc3nX5e6hmg0BN9KnEIrc4nqjpoWLqkZBSg/exec') {
                     await fetch(GOOGLE_SCRIPT_URL, {
                         method: 'POST',
-                        mode: 'no-cors',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(formData)
                     });
