@@ -8,12 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --valentine-pink: #C4847A;
             --valentine-pink-dark: #B07369;
@@ -23,7 +18,6 @@
             --border: #E8D5D2;
             --butter-pink: #FCE8E6;
         }
-
         body {
             font-family: 'Inter', sans-serif;
             color: var(--dark-text);
@@ -31,427 +25,45 @@
             line-height: 1.6;
             font-weight: 300;
         }
-
-        nav {
-            padding: 2rem 8%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .logo {
-            font-family: 'Libre Baskerville', serif;
-            font-size: 1.3rem;
-            color: var(--valentine-pink);
-            text-decoration: none;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--light-text);
-            font-size: 0.9rem;
-        }
-
-        .nav-links a:hover {
-            color: var(--valentine-pink);
-        }
-
-        .order-page {
-            max-width: 550px;
-            margin: 0 auto;
-            padding: 2rem 1.5rem 5rem;
-        }
-
-        .page-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .page-title {
-            font-family: 'Libre Baskerville', serif;
-            font-size: 2.2rem;
-            font-weight: 400;
-            color: var(--valentine-pink);
-            margin-bottom: 1rem;
-        }
-
-        .page-description {
-            color: var(--light-text);
-            font-size: 0.95rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .notice {
-            background: var(--butter-pink);
-            padding: 0.75rem 1.25rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            color: var(--valentine-pink);
-            display: inline-block;
-        }
-
-        .product-preview {
-            text-align: center;
-            margin: 2rem 0;
-        }
-
-        .product-preview img {
-            max-width: 100%;
-            width: 400px;
-            border-radius: 8px;
-        }
-
-        .section {
-            margin-top: 2.5rem;
-        }
-
-        .section-title {
-            font-family: 'Libre Baskerville', serif;
-            font-size: 1.3rem;
-            font-weight: 400;
-            color: var(--valentine-pink);
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 1.25rem;
-        }
-
-        /* Color Box Cards */
-        .color-card {
-            background: white;
-            border-radius: 8px;
-            padding: 1.25rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .color-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .color-swatch {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-        }
-
+        nav { padding: 2rem 8%; display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto; }
+        .logo { font-family: 'Libre Baskerville', serif; font-size: 1.3rem; color: var(--valentine-pink); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a { text-decoration: none; color: var(--light-text); font-size: 0.9rem; }
+        .order-page { max-width: 550px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+        .page-header { text-align: center; margin-bottom: 2rem; }
+        .page-title { font-family: 'Libre Baskerville', serif; font-size: 2.2rem; font-weight: 400; color: var(--valentine-pink); margin-bottom: 1rem; }
+        .section { margin-top: 3rem; }
+        .section-title { font-family: 'Libre Baskerville', serif; font-size: 1.3rem; color: var(--valentine-pink); padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+        .product-card { background: white; border-radius: 8px; padding: 1.25rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .color-info { display: flex; align-items: center; gap: 1rem; }
+        .color-swatch { width: 40px; height: 40px; border-radius: 8px; }
         .color-swatch.pink { background: #F8C8DC; }
         .color-swatch.red { background: #DC3545; }
         .color-swatch.white { background: #FFFFFF; border: 1px solid #E0DCD5; }
-
-        .color-details h3 {
-            font-family: 'Libre Baskerville', serif;
-            font-size: 1.1rem;
-            font-weight: 400;
-            color: var(--dark-text);
-            margin-bottom: 0.25rem;
-        }
-
-        .color-details .price {
-            color: var(--valentine-pink);
-            font-size: 0.95rem;
-        }
-
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .qty-btn {
-            width: 36px;
-            height: 36px;
-            border: 1px solid var(--border);
-            border-radius: 50%;
-            background: white;
-            font-size: 1.2rem;
-            color: var(--valentine-pink);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .qty-btn:hover {
-            background: var(--butter-pink);
-        }
-
-        .qty-display {
-            font-size: 1rem;
-            min-width: 24px;
-            text-align: center;
-        }
-
-        /* Order Total Bar */
-        .order-total-bar {
-            background: var(--butter-pink);
-            border-radius: 8px;
-            padding: 1rem 1.25rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 1rem;
-        }
-
-        .order-total-bar span {
-            color: var(--valentine-pink);
-        }
-
-        .order-total-bar .total-amount {
-            font-size: 1.25rem;
-            font-weight: 500;
-        }
-
-        /* Form Fields */
-        .form-group {
-            margin-bottom: 1.25rem;
-        }
-
-        label {
-            display: block;
-            font-size: 0.85rem;
-            color: var(--dark-text);
-            margin-bottom: 0.5rem;
-            font-weight: 400;
-        }
-
-        input, textarea {
-            width: 100%;
-            padding: 0.9rem 1rem;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.95rem;
-            background: white;
-            color: var(--dark-text);
-        }
-
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: var(--valentine-pink);
-        }
-
-        input::placeholder, textarea::placeholder {
-            color: #C5B8B5;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        /* Pickup Info Box */
-        .info-box {
-            background: white;
-            border-left: 3px solid var(--valentine-pink);
-            padding: 1rem 1.25rem;
-            border-radius: 0 6px 6px 0;
-            margin-bottom: 1.5rem;
-        }
-
-        .info-box .highlight {
-            color: var(--valentine-pink);
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-        }
-
-        .info-box p {
-            font-size: 0.9rem;
-            color: var(--dark-text);
-            margin-bottom: 0.25rem;
-        }
-
-        .info-box .note {
-            font-style: italic;
-            color: var(--light-text);
-        }
-
-        /* Radio Options */
-        .radio-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .radio-option {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            cursor: pointer;
-        }
-
-        .radio-option input[type="radio"] {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--valentine-pink);
-        }
-
-        .radio-option span {
-            font-size: 0.95rem;
-        }
-
-        .radio-option .preferred {
-            color: var(--light-text);
-            font-size: 0.85rem;
-        }
-
-        .radio-option .note-text {
-            color: var(--light-text);
-            font-size: 0.85rem;
-            font-style: italic;
-        }
-
-        .radio-option.disabled {
-            opacity: 0.4;
-            pointer-events: none;
-        }
-
-        /* Order Summary */
-        .summary-box {
-            background: white;
-            border-radius: 8px;
-            padding: 1.25rem;
-        }
-
-        .summary-items {
-            color: var(--light-text);
-            font-size: 0.95rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .summary-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-        }
-
-        .summary-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .summary-total {
-            display: flex;
-            justify-content: space-between;
-            padding-top: 1rem;
-            font-size: 1rem;
-        }
-
-        .summary-total .amount {
-            color: var(--valentine-pink);
-            font-weight: 500;
-            font-size: 1.1rem;
-        }
-
-        /* Submit Button */
-        .btn-submit {
-            width: 100%;
-            padding: 1rem;
-            background: var(--valentine-pink);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            cursor: pointer;
-            margin-top: 2rem;
-            transition: background 0.2s;
-        }
-
-        .btn-submit:hover {
-            background: var(--valentine-pink-dark);
-        }
-
-        .btn-submit:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 4rem 2rem 3rem;
-        }
-
-        footer .logo {
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        footer p {
-            color: var(--light-text);
-            font-size: 0.85rem;
-            margin-bottom: 1rem;
-        }
-
-        footer a {
-            color: var(--valentine-pink);
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-
-        /* Confirmation */
-        .confirmation {
-            display: none;
-            text-align: center;
-            padding: 3rem 0;
-        }
-
-        .confirmation.show {
-            display: block;
-        }
-
-        .form-container.hide {
-            display: none;
-        }
-
-        .checkmark {
-            width: 60px;
-            height: 60px;
-            background: var(--valentine-pink);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-        }
-
-        .checkmark svg {
-            width: 30px;
-            height: 30px;
-            fill: white;
-        }
-
-        .confirmation h2 {
-            font-family: 'Libre Baskerville', serif;
-            font-size: 1.5rem;
-            color: var(--valentine-pink);
-            margin-bottom: 1rem;
-        }
-
-        .confirmation > p {
-            color: var(--light-text);
-        }
-
-        @media (max-width: 600px) {
-            .nav-links { gap: 1.2rem; }
-            .nav-links a { font-size: 0.8rem; }
-            .page-title { font-size: 1.8rem; }
-            .color-info { gap: 0.75rem; }
-            .color-swatch { width: 32px; height: 32px; }
-        }
+        .qty-controls { display: flex; align-items: center; gap: 1rem; }
+        .qty-btn { width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 50%; background: white; color: var(--valentine-pink); cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .qty-btn:hover { background: var(--butter-pink); }
+        .total-bar { background: var(--butter-pink); border-radius: 8px; padding: 1rem 1.25rem; display: flex; justify-content: space-between; margin-top: 1rem; color: var(--valentine-pink); font-weight: 500; font-size: 1.1rem; }
+        .info-box { background: white; border-left: 3px solid var(--valentine-pink); padding: 1.25rem; border-radius: 0 8px 8px 0; margin-bottom: 1.5rem; }
+        .address-link { color: inherit; text-decoration: none; }
+        .address-link:hover { text-decoration: underline; }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; font-size: 0.85rem; margin-bottom: 0.6rem; color: var(--dark-text); font-weight: 400; }
+        input, textarea { width: 100%; padding: 0.9rem 1rem; border: 1px solid var(--border); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.95rem; background: white; }
+        .radio-group { display: flex; flex-direction: column; gap: 0.8rem; }
+        .radio-option { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 0.95rem; color: var(--dark-text); }
+        .radio-option input { width: 18px; height: 18px; accent-color: var(--valentine-pink); cursor: pointer; }
+        .radio-option.disabled { opacity: 0.3; pointer-events: none; }
+        .handle-detail { color: var(--light-text); font-size: 0.85rem; }
+        .method-details { display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--border); }
+        .method-details.active { display: block; }
+        .btn-submit { width: 100%; padding: 1.1rem; background: var(--valentine-pink); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 500; cursor: pointer; margin-top: 2.5rem; transition: background 0.2s; }
+        .btn-submit:hover { background: var(--valentine-pink-dark); }
+        #confirmation { display: none; text-align: center; padding: 4rem 0; }
+        #confirmation.show { display: block; }
+        .summary-list { margin-top: 1.5rem; font-size: 0.95rem; text-align: left; }
+        .summary-item { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #eee; }
+        footer { text-align: center; padding: 4rem 0; }
     </style>
 </head>
 <body>
@@ -465,171 +77,107 @@
     </nav>
 
     <div class="order-page">
-        <div class="form-container" id="formContainer">
+        <div id="formContainer">
             <div class="page-header">
                 <h1 class="page-title">valentine's day pre-order</h1>
-                <p class="page-description">Limited edition heart boxes filled with chocolate almond toffee. The perfect sweet gift for someone special.</p>
-                <span class="notice">Order by Feb 10 for Valentine's Day pickup</span>
-            </div>
-
-            <div class="product-preview">
-                <img src="images/vday-1.png" alt="Valentine's Day toffee boxes in pink, red, and white">
+                <p style="color: var(--light-text); font-size: 0.95rem;">Limited edition heart boxes filled with chocolate almond toffee.</p>
             </div>
 
             <form id="orderForm">
                 <div class="section">
                     <h2 class="section-title">choose your boxes</h2>
-                    <p style="font-size: 0.9rem; color: var(--light-text); margin-bottom: 1.25rem;">8oz boxes — $10 each. Pick as many of each color as you'd like!</p>
-
-                    <div class="color-card">
+                    <div class="product-card">
                         <div class="color-info">
                             <div class="color-swatch pink"></div>
-                            <div class="color-details">
-                                <h3>pink box</h3>
-                                <span class="price">$10</span>
-                            </div>
+                            <div class="color-details"><h3>pink box</h3><p style="color: var(--valentine-pink);">$10</p></div>
                         </div>
-                        <div class="quantity-controls">
-                            <button type="button" class="qty-btn" onclick="changeQty('pink', -1)">−</button>
-                            <span class="qty-display" id="qty-pink">0</span>
-                            <button type="button" class="qty-btn" onclick="changeQty('pink', 1)">+</button>
+                        <div class="qty-controls">
+                            <button type="button" class="qty-btn" onclick="updateQty('pink', -1)">−</button>
+                            <span id="qty-pink">0</span>
+                            <button type="button" class="qty-btn" onclick="updateQty('pink', 1)">+</button>
                         </div>
                     </div>
-
-                    <div class="color-card">
+                    <div class="product-card">
                         <div class="color-info">
                             <div class="color-swatch red"></div>
-                            <div class="color-details">
-                                <h3>red box</h3>
-                                <span class="price">$10</span>
-                            </div>
+                            <div class="color-details"><h3>red box</h3><p style="color: var(--valentine-pink);">$10</p></div>
                         </div>
-                        <div class="quantity-controls">
-                            <button type="button" class="qty-btn" onclick="changeQty('red', -1)">−</button>
-                            <span class="qty-display" id="qty-red">0</span>
-                            <button type="button" class="qty-btn" onclick="changeQty('red', 1)">+</button>
+                        <div class="qty-controls">
+                            <button type="button" class="qty-btn" onclick="updateQty('red', -1)">−</button>
+                            <span id="qty-red">0</span>
+                            <button type="button" class="qty-btn" onclick="updateQty('red', 1)">+</button>
                         </div>
                     </div>
-
-                    <div class="color-card">
+                    <div class="product-card">
                         <div class="color-info">
                             <div class="color-swatch white"></div>
-                            <div class="color-details">
-                                <h3>white box</h3>
-                                <span class="price">$10</span>
-                            </div>
+                            <div class="color-details"><h3>white box</h3><p style="color: var(--valentine-pink);">$10</p></div>
                         </div>
-                        <div class="quantity-controls">
-                            <button type="button" class="qty-btn" onclick="changeQty('white', -1)">−</button>
-                            <span class="qty-display" id="qty-white">0</span>
-                            <button type="button" class="qty-btn" onclick="changeQty('white', 1)">+</button>
+                        <div class="qty-controls">
+                            <button type="button" class="qty-btn" onclick="updateQty('white', -1)">−</button>
+                            <span id="qty-white">0</span>
+                            <button type="button" class="qty-btn" onclick="updateQty('white', 1)">+</button>
                         </div>
                     </div>
-
-                    <div class="order-total-bar">
-                        <span>order total</span>
-                        <span class="total-amount">$<span id="runningTotal">0</span></span>
-                    </div>
+                    <div class="total-bar"><span>order total</span><span id="total-display">$0</span></div>
                 </div>
 
                 <div class="section">
                     <h2 class="section-title">your info</h2>
-
-                    <div class="form-group">
-                        <label for="name">name</label>
-                        <input type="text" id="name" name="name" placeholder="Your name" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">email</label>
-                        <input type="email" id="email" name="email" placeholder="you@example.com" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="phone">phone</label>
-                        <input type="tel" id="phone" name="phone" placeholder="(555) 123-4567" required>
-                    </div>
+                    <div class="form-group"><label>name</label><input type="text" id="name" placeholder="Your name" required></div>
+                    <div class="form-group"><label>email</label><input type="email" id="email" placeholder="you@example.com" required></div>
+                    <div class="form-group"><label>phone</label><input type="tel" id="phone" placeholder="(555) 123-4567" required></div>
                 </div>
 
                 <div class="section">
-                    <h2 class="section-title">pickup details</h2>
-
-                    <div class="info-box">
-                        <p class="highlight">Pickup Location</p>
-                        <p>3639 Market St, San Francisco, CA 94131</p>
-                        <p class="note">Ring the first door bell when you get here!</p>
+                    <h2 class="section-title">how to get it</h2>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="method" value="Pickup" required onclick="toggleMethod('pickup')" checked> 
+                            <span>Pickup (Upper Market in San Francisco)</span>
+                        </label>
+                        <label class="radio-option" id="vDayDeliveryLabel" style="opacity: 0.4; cursor: not-allowed;">
+                            <input type="radio" name="method" id="vDayDeliveryRadio" value="Delivery" onclick="toggleMethod('delivery')" disabled> 
+                            <span>Delivery (Free and available for orders $100+ in San Francisco)</span>
+                        </label>
                     </div>
 
-                    <div class="form-group">
+                    <div id="pickupDetails" class="method-details active">
+                        <div class="info-box">
+                            <p style="font-weight: 500; color: var(--valentine-pink);">
+                                <a href="https://maps.app.goo.gl/EZmuY7BPceEqVesBA" target="_blank" class="address-link">3639 Market Street, San Francisco, CA 94131</a>
+                            </p>
+                            <p style="font-style: italic; font-size: 0.85rem; color: var(--light-text);">Ring the first door bell when you get here!</p>
+                        </div>
                         <label>pickup day</label>
-                        <div class="radio-group" id="pickupDayGroup">
-                            <label class="radio-option">
-                                <input type="radio" name="pickup_day" value="Thursday, February 12" required onchange="updateTimeOptions()">
-                                <span>Thursday, February 12</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="pickup_day" value="Friday, February 13" onchange="updateTimeOptions()">
-                                <span>Friday, February 13</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="pickup_day" value="Saturday, February 14" onchange="updateTimeOptions()">
-                                <span>Saturday, February 14 <span class="note-text">(morning only)</span></span>
-                            </label>
+                        <div class="radio-group">
+                            <label class="radio-option"><input type="radio" name="day" value="Thursday, February 12" onclick="updateTimes(false)"> <span>Thursday, February 12</span></label>
+                            <label class="radio-option"><input type="radio" name="day" value="Friday, February 13" onclick="updateTimes(false)"> <span>Friday, February 13</span></label>
+                            <label class="radio-option"><input type="radio" name="day" value="Saturday, February 14" onclick="updateTimes(true)"> <span>Saturday, February 14 <span class="note-text">(morning only)</span></span></label>
+                        </div>
+                        <label style="margin-top: 1.5rem;">pickup time</label>
+                        <div class="radio-group">
+                            <label class="radio-option" id="morningSlot"><input type="radio" name="time" value="Morning (9AM - 11AM)"> <span>Morning (9AM - 11AM)</span></label>
+                            <label class="radio-option" id="afternoonSlot"><input type="radio" name="time" value="Afternoon (12:30PM - 3PM)"> <span>Afternoon (12:30PM - 3PM)</span></label>
+                            <label class="radio-option" id="eveningSlot"><input type="radio" name="time" value="Evening (6:30PM - 9PM)"> <span>Evening (6:30PM - 9PM)</span></label>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>pickup time</label>
-                        <div class="radio-group" id="pickupTimeGroup">
-                            <label class="radio-option" id="time-morning">
-                                <input type="radio" name="pickup_time" value="Morning (9AM - 11AM)" required>
-                                <span>Morning (9AM - 11AM)</span>
-                            </label>
-                            <label class="radio-option" id="time-afternoon">
-                                <input type="radio" name="pickup_time" value="Afternoon (12:30PM - 3PM)">
-                                <span>Afternoon (12:30PM - 3PM)</span>
-                            </label>
-                            <label class="radio-option" id="time-evening">
-                                <input type="radio" name="pickup_time" value="Evening (6:30PM - 9PM)">
-                                <span>Evening (6:30PM - 9PM)</span>
-                            </label>
+                    <div id="deliveryDetails" class="method-details">
+                        <div class="form-group">
+                            <label>delivery address</label>
+                            <p style="font-size: 0.85rem; color: var(--light-text); margin-bottom: 0.5rem;">Your order qualifies for free delivery in San Francisco!</p>
+                            <textarea id="address" placeholder="Enter your San Francisco address"></textarea>
                         </div>
                     </div>
                 </div>
 
                 <div class="section">
                     <h2 class="section-title">payment</h2>
-
                     <div class="radio-group">
-                        <label class="radio-option">
-                            <input type="radio" name="payment" value="Venmo" required>
-                            <span>Venmo <span class="preferred">(preferred)</span></span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="payment" value="Cash">
-                            <span>Cash at pickup</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="payment" value="Zelle">
-                            <span>Zelle</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="section">
-                    <h2 class="section-title">gift note</h2>
-                    <textarea id="notes" name="notes" placeholder="Want a note included with any boxes? Write it here! (optional)"></textarea>
-                </div>
-
-                <div class="section">
-                    <h2 class="section-title">order summary</h2>
-
-                    <div class="summary-box">
-                        <div class="summary-items" id="summaryItems">No boxes selected yet</div>
-                        <div class="summary-total">
-                            <span>Total</span>
-                            <span class="amount">$<span id="finalTotal">0</span></span>
-                        </div>
+                        <label class="radio-option"><input type="radio" name="pay" value="Venmo" required> <span>Venmo <span class="handle-detail">(@oats123)</span></span></label>
+                        <label class="radio-option"><input type="radio" name="pay" value="Zelle"> <span>Zelle <span class="handle-detail">(avenajiajia@gmail.com)</span></span></label>
+                        <label class="radio-option"><input type="radio" name="pay" value="Cash"> <span>Cash at pickup</span></label>
                     </div>
                 </div>
 
@@ -637,138 +185,125 @@
             </form>
         </div>
 
-        <div class="confirmation" id="confirmation">
-            <div class="checkmark">
-                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        <div id="confirmation">
+            <h1 class="page-title">order received!</h1>
+            <p style="color: var(--light-text);">See you soon! Here is what I have:</p>
+            <div class="info-box" style="margin-top: 2rem; border-left-color: var(--valentine-pink);">
+                <h3 style="font-family: 'Libre Baskerville'; font-size: 1rem; margin-bottom: 0.5rem;">Order Summary</h3>
+                <div id="summaryContent" class="summary-list"></div>
             </div>
-            <h2>pre-order received!</h2>
-            <p>Thanks for your Valentine's order! I'll text you to confirm pickup details.</p>
-
-            <div class="section" style="text-align: left; margin-top: 2rem;">
-                <div class="info-box">
-                    <p class="highlight">Payment Info</p>
-                    <p><strong>Venmo:</strong> @oats123 (last 4 digits is 7476)</p>
-                    <p><strong>Zelle:</strong> avenajiajia@gmail.com</p>
-                    <p class="note" style="margin-top: 0.5rem;">Include your name in the payment note. Total: $<span id="confirmTotal">0</span></p>
-                </div>
+            <div class="info-box" style="border-left-color: var(--valentine-pink-dark); background: #FFF9F8;">
+                <p style="font-weight: 500; color: var(--valentine-pink);">Payment Reminder</p>
+                <p style="font-size: 0.9rem;">Venmo: @oats123 (last 4 digits: 7476)</p>
+                <p style="font-size: 0.9rem;">Zelle: avenajiajia@gmail.com</p>
             </div>
-
-            <a href="index.html" style="display: inline-block; margin-top: 2rem; color: var(--light-text);">← back to home</a>
+            <a href="index.html" style="display: block; text-align: center; margin-top: 2rem; color: var(--valentine-pink); text-decoration: none; font-weight: 500;">← back to home</a>
         </div>
     </div>
 
     <footer>
         <a href="index.html" class="logo">sunday toffee</a>
-        <p>made with love, one batch at a time</p>
-        <a href="https://instagram.com/sunday_toffee" target="_blank">@sunday_toffee</a>
+        <p style="color: var(--light-text); font-size: 0.85rem; margin-top: 0.5rem;">made with love, one batch at a time</p>
+        <a href="https://instagram.com/sunday_toffee" target="_blank" style="color: var(--valentine-pink); text-decoration: none; font-size: 0.9rem;">@sunday_toffee</a>
     </footer>
 
     <script>
-        const PRICE = 10;
-const quantities = { pink: 0, red: 0, white: 0 };
+        let quantities = { pink: 0, red: 0, white: 0 };
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwT-mQefx2FonndoDe81zB0WGZJAh3A-s0Cc3nX5e6hmg0BN9KnEIrc4nqjpoWLqkZBSg/exec';
 
-// 1. Logic for + and - buttons
-function changeQty(color, delta) {
-    quantities[color] = Math.max(0, quantities[color] + delta);
-    document.getElementById(`qty-${color}`).textContent = quantities[color];
-    updateTotals();
-}
+        function updateQty(color, delta) {
+            quantities[color] = Math.max(0, quantities[color] + delta);
+            document.getElementById(`qty-${color}`).innerText = quantities[color];
+            const total = (quantities.pink + quantities.red + quantities.white) * 10;
+            document.getElementById('total-display').innerText = `$${total}`;
 
-// 2. Updates the running total and the summary list
-function updateTotals() {
-    const total = (quantities.pink + quantities.red + quantities.white) * PRICE;
-    document.getElementById('runningTotal').textContent = total;
-    document.getElementById('finalTotal').textContent = total;
-
-    const summaryEl = document.getElementById('summaryItems');
-    const items = [];
-
-    if (quantities.pink > 0) items.push(`<div class="summary-item"><span>Pink box × ${quantities.pink}</span><span>$${quantities.pink * PRICE}</span></div>`);
-    if (quantities.red > 0) items.push(`<div class="summary-item"><span>Red box × ${quantities.red}</span><span>$${quantities.red * PRICE}</span></div>`);
-    if (quantities.white > 0) items.push(`<div class="summary-item"><span>White box × ${quantities.white}</span><span>$${quantities.white * PRICE}</span></div>`);
-
-    summaryEl.innerHTML = items.length > 0 ? items.join('') : 'No boxes selected yet';
-}
-
-// 3. Logic to disable afternoon/evening if Saturday is picked
-function updateTimeOptions() {
-    const selectedDay = document.querySelector('input[name="pickup_day"]:checked');
-    const morningOption = document.getElementById('time-morning');
-    const afternoonOption = document.getElementById('time-afternoon');
-    const eveningOption = document.getElementById('time-evening');
-
-    // Reset visibility/state
-    [afternoonOption, eveningOption].forEach(opt => {
-        opt.classList.remove('disabled');
-        opt.querySelector('input').disabled = false;
-    });
-
-    if (selectedDay && selectedDay.value.includes('Saturday')) {
-        afternoonOption.classList.add('disabled');
-        eveningOption.classList.add('disabled');
-        afternoonOption.querySelector('input').disabled = true;
-        eveningOption.querySelector('input').disabled = true;
-
-        // Auto-select morning if an invalid time was previously picked
-        const selectedTime = document.querySelector('input[name="pickup_time"]:checked');
-        if (selectedTime && (selectedTime.value.includes('Afternoon') || selectedTime.value.includes('Evening'))) {
-            morningOption.querySelector('input').checked = true;
+            const radio = document.getElementById('vDayDeliveryRadio');
+            const label = document.getElementById('vDayDeliveryLabel');
+            if (total >= 100) {
+                radio.disabled = false;
+                label.style.opacity = "1";
+                label.style.cursor = "pointer";
+            } else {
+                if (radio.checked) {
+                    document.querySelector('input[value="Pickup"]').checked = true;
+                    toggleMethod('pickup');
+                }
+                radio.disabled = true;
+                label.style.opacity = "0.4";
+                label.style.cursor = "not-allowed";
+            }
         }
-    }
-}
 
-// 4. The fixed Form Submission Logic
-document.getElementById('orderForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
+        function toggleMethod(m) {
+            const pickupDetails = document.getElementById('pickupDetails');
+            const deliveryDetails = document.getElementById('deliveryDetails');
+            const addressField = document.getElementById('address');
+            if (m === 'pickup') {
+                pickupDetails.classList.add('active');
+                deliveryDetails.classList.remove('active');
+                addressField.required = false;
+                addressField.value = "";
+            } else {
+                pickupDetails.classList.remove('active');
+                deliveryDetails.classList.add('active');
+                addressField.required = true;
+                document.querySelectorAll('input[name="day"], input[name="time"]').forEach(i => i.checked = false);
+            }
+        }
 
-    const totalBoxes = quantities.pink + quantities.red + quantities.white;
-    if (totalBoxes === 0) {
-        alert('Please select at least one box');
-        return;
-    }
+        function updateTimes(isSaturday) {
+            const afternoon = document.getElementById('afternoonSlot');
+            const evening = document.getElementById('eveningSlot');
+            const morningInput = document.querySelector('#morningSlot input');
+            if (isSaturday) {
+                afternoon.classList.add('disabled');
+                evening.classList.add('disabled');
+                afternoon.querySelector('input').disabled = true;
+                evening.querySelector('input').disabled = true;
+                morningInput.checked = true;
+            } else {
+                afternoon.classList.remove('disabled');
+                evening.classList.remove('disabled');
+                afternoon.querySelector('input').disabled = false;
+                evening.querySelector('input').disabled = false;
+            }
+        }
 
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.textContent = 'submitting...';
+        document.getElementById('orderForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const total = (quantities.pink + quantities.red + quantities.white) * 10;
+            if (total === 0) { alert('Select a box!'); return; }
+            const method = document.querySelector('input[name="method"]:checked').value;
+            const address = document.getElementById('address').value;
+            if (method === 'Delivery' && (!address || address.trim() === "")) {
+                alert('Please enter a delivery address.'); return;
+            }
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true; btn.textContent = 'submitting...';
+            const name = document.getElementById('name').value;
+            const day = document.querySelector('input[name="day"]:checked')?.value || 'N/A';
+            const time = document.querySelector('input[name="time"]:checked')?.value || 'N/A';
+            const pay = document.querySelector('input[name="pay"]:checked').value;
 
-    const total = totalBoxes * PRICE;
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwT-mQefx2FonndoDe81zB0WGZJAh3A-s0Cc3nX5e6hmg0BN9KnEIrc4nqjpoWLqkZBSg/exec';
+            document.getElementById('summaryContent').innerHTML = `
+                <div class="summary-item"><span>Name:</span><span>${name}</span></div>
+                <div class="summary-item"><span>Pink Boxes:</span><span>${quantities.pink}</span></div>
+                <div class="summary-item"><span>Red Boxes:</span><span>${quantities.red}</span></div>
+                <div class="summary-item"><span>White Boxes:</span><span>${quantities.white}</span></div>
+                <div class="summary-item"><span>Total:</span><span>$${total}</span></div>
+                <div class="summary-item"><span>Method:</span><span>${method}</span></div>
+                ${method === 'Pickup' ? `<div class="summary-item"><span>Day:</span><span>${day}</span></div><div class="summary-item"><span>Time:</span><span>${time}</span></div>` : `<div class="summary-item"><span>Address:</span><span>${address}</span></div>`}
+                <div class="summary-item"><span>Payment:</span><span>${pay}</span></div>`;
 
-    const formData = {
-        name: document.getElementById('name').value,
-        email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value,
-        pink_boxes: quantities.pink,
-        red_boxes: quantities.red,
-        white_boxes: quantities.white,
-        pickup_day: document.querySelector('input[name="pickup_day"]:checked')?.value,
-        pickup_time: document.querySelector('input[name="pickup_time"]:checked')?.value,
-        payment: document.querySelector('input[name="payment"]:checked')?.value,
-        notes: document.getElementById('notes').value,
-        total: total,
-        timestamp: new Date().toISOString()
-    };
-
-    try {
-        await fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors', 
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData)
+            try {
+                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name, email: document.getElementById('email').value, phone: document.getElementById('phone').value, pink_boxes: quantities.pink, red_boxes: quantities.red, white_boxes: quantities.white, method, day, time, address, payment: pay, total, timestamp: new Date().toISOString() }) });
+                document.getElementById('formContainer').style.display = 'none';
+                document.getElementById('confirmation').classList.add('show');
+            } catch (error) {
+                alert('Error submitting. DM on IG!');
+                btn.disabled = false;
+            }
         });
-
-        // Success State
-        document.getElementById('formContainer').classList.add('hide');
-        document.getElementById('confirmation').classList.add('show');
-        document.getElementById('confirmTotal').textContent = total;
-
-    } catch (error) {
-        console.error('Submission error:', error);
-        alert('Something went wrong. Please try again or DM me on Instagram!');
-        btn.disabled = false;
-        btn.textContent = 'submit pre-order';
-    }
-});
     </script>
 </body>
 </html>
