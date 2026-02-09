@@ -58,7 +58,6 @@
         #confirmation.show { display: block; }
         .summary-list { margin-top: 1.5rem; font-size: 0.95rem; text-align: left; }
         .summary-item { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #eee; }
-        .form-container.hide { display: none; }
         footer { text-align: center; padding: 4rem 0; }
     </style>
 </head>
@@ -71,14 +70,12 @@
             <li><a href="order.html">order</a></li>
         </ul>
     </nav>
-
     <div class="order-page">
         <div id="formContainer">
             <div class="page-header">
                 <h1 class="page-title">place your order</h1>
                 <p style="color: var(--light-text); font-size: 0.95rem;">Buttery, crunchy toffee filled with almonds, covered in rich chocolate, and topped with toasted nuts.</p>
             </div>
-
             <form id="orderForm">
                 <div class="section">
                     <h2 class="section-title">choose your toffee</h2>
@@ -100,14 +97,17 @@
                     </div>
                     <div class="total-bar"><span>order total</span><span id="total-display">$0</span></div>
                 </div>
-
                 <div class="section">
                     <h2 class="section-title">your info</h2>
                     <div class="form-group"><label>name</label><input type="text" id="name" placeholder="Your name" required></div>
-                    <div class="form-group"><label>email</label><input type="email" id="email" placeholder="you@example.com" required></div>
+                    <div class="form-group">
+                        <label>email</label>
+                        <input type="email" id="email" placeholder="you@example.com" required 
+                               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" 
+                               title="Please enter a valid email address (e.g., name@domain.com)">
+                    </div>
                     <div class="form-group"><label>phone</label><input type="tel" id="phone" placeholder="(555) 123-4567" required></div>
                 </div>
-
                 <div class="section">
                     <h2 class="section-title">how to get it</h2>
                     <div class="radio-group">
@@ -120,13 +120,12 @@
                             <span>Delivery (Free and available for orders $100+ in San Francisco)</span>
                         </label>
                     </div>
-
                     <div id="pickupDetails" class="method-details active">
                         <div class="info-box">
                             <p style="font-weight: 500; color: var(--primary-brown);">
                                 <a href="https://maps.app.goo.gl/EZmuY7BPceEqVesBA" target="_blank" class="address-link">3639 Market Street, San Francisco, CA 94131</a>
                             </p>
-                            <p style="font-style: italic; font-size: 0.85rem; color: var(--light-text); margin-top: 0.4rem;">Ring the first door bell when you get here!</p>
+                            <p style="font-style: italic; font-size: 0.85rem; color: var(--light-text);">Ring the first door bell when you get here!</p>
                         </div>
                         <label>pickup window (Sundays)</label>
                         <div class="radio-group">
@@ -134,7 +133,6 @@
                             <label class="radio-option"><input type="radio" name="window" value="3PM - 6PM"> <span>3PM - 6PM</span></label>
                         </div>
                     </div>
-
                     <div id="deliveryDetails" class="method-details">
                         <div class="form-group">
                             <label>delivery address</label>
@@ -143,7 +141,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="section">
                     <h2 class="section-title">payment</h2>
                     <div class="radio-group">
@@ -152,11 +149,9 @@
                         <label class="radio-option"><input type="radio" name="pay" value="Cash"> <span>Cash at pickup</span></label>
                     </div>
                 </div>
-
                 <button type="submit" class="btn-submit" id="submitBtn">place order</button>
             </form>
         </div>
-
         <div id="confirmation">
             <h1 class="page-title">order received!</h1>
             <p style="color: var(--light-text);">See you soon! Here is what I have:</p>
@@ -172,13 +167,6 @@
             <a href="index.html" style="display: inline-block; margin-top: 2rem; color: var(--primary-brown); text-decoration: none; font-weight: 500;">← back to home</a>
         </div>
     </div>
-
-    <footer>
-        <a href="index.html" class="logo">sunday toffee</a>
-        <p style="color: var(--light-text); font-size: 0.85rem; margin-top: 0.5rem;">made with love, one batch at a time</p>
-        <a href="https://instagram.com/sunday_toffee" target="_blank" style="color: var(--primary-brown); text-decoration: none; font-size: 0.9rem;">@sunday_toffee</a>
-    </footer>
-
     <script>
         let quantities = { eight: 0, four: 0 };
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwT-mQefx2FonndoDe81zB0WGZJAh3A-s0Cc3nX5e6hmg0BN9KnEIrc4nqjpoWLqkZBSg/exec';
@@ -188,73 +176,43 @@
             document.getElementById(`qty-${type}`).innerText = quantities[type];
             const total = (quantities.eight * 10) + (quantities.four * 5);
             document.getElementById('total-display').innerText = `$${total}`;
-
             const radio = document.getElementById('deliveryRadio');
             const label = document.getElementById('deliveryLabel');
             if (total >= 100) {
-                radio.disabled = false;
-                label.style.opacity = "1";
-                label.style.cursor = "pointer";
+                radio.disabled = false; label.style.opacity = "1"; label.style.cursor = "pointer";
             } else {
-                if (radio.checked) {
-                    document.querySelector('input[value="Pickup"]').checked = true;
-                    toggleMethod('pickup');
-                }
-                radio.disabled = true;
-                label.style.opacity = "0.4";
-                label.style.cursor = "not-allowed";
+                if (radio.checked) { document.querySelector('input[value="Pickup"]').checked = true; toggleMethod('pickup'); }
+                radio.disabled = true; label.style.opacity = "0.4"; label.style.cursor = "not-allowed";
             }
         }
-
         function toggleMethod(m) {
             const pickupDetails = document.getElementById('pickupDetails');
             const deliveryDetails = document.getElementById('deliveryDetails');
             const addressField = document.getElementById('address');
             if (m === 'pickup') {
-                pickupDetails.classList.add('active');
-                deliveryDetails.classList.remove('active');
-                addressField.required = false;
-                addressField.value = "";
+                pickupDetails.classList.add('active'); deliveryDetails.classList.remove('active');
+                addressField.required = false; addressField.value = "";
             } else {
-                pickupDetails.classList.remove('active');
-                deliveryDetails.classList.add('active');
-                addressField.required = true;
-                document.querySelectorAll('input[name="window"]').forEach(i => i.checked = false);
+                pickupDetails.classList.remove('active'); deliveryDetails.classList.add('active');
+                addressField.required = true; document.querySelectorAll('input[name="window"]').forEach(i => i.checked = false);
             }
         }
-
         document.getElementById('orderForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const total = (quantities.eight * 10) + (quantities.four * 5);
             if (total === 0) { alert('Select a box!'); return; }
             const method = document.querySelector('input[name="method"]:checked').value;
             const address = document.getElementById('address').value;
-            if (method === 'Delivery' && (!address || address.trim() === "")) {
-                alert('Please enter a delivery address.'); return;
-            }
-            const btn = document.getElementById('submitBtn');
-            btn.disabled = true; btn.textContent = 'submitting...';
+            if (method === 'Delivery' && (!address || address.trim() === "")) { alert('Please enter a delivery address.'); return; }
+            const btn = document.getElementById('submitBtn'); btn.disabled = true; btn.textContent = 'submitting...';
             const name = document.getElementById('name').value;
             const window = document.querySelector('input[name="window"]:checked')?.value || 'N/A';
             const pay = document.querySelector('input[name="pay"]:checked').value;
-
-            document.getElementById('summaryContent').innerHTML = `
-                <div class="summary-item"><span>Name:</span><span>${name}</span></div>
-                <div class="summary-item"><span>8 oz boxes:</span><span>${quantities.eight}</span></div>
-                <div class="summary-item"><span>4 oz boxes:</span><span>${quantities.four}</span></div>
-                <div class="summary-item"><span>Total:</span><span>$${total}</span></div>
-                <div class="summary-item"><span>Method:</span><span>${method}</span></div>
-                ${method === 'Pickup' ? `<div class="summary-item"><span>Window:</span><span>${window}</span></div>` : `<div class="summary-item"><span>Address:</span><span>${address}</span></div>`}
-                <div class="summary-item"><span>Payment:</span><span>${pay}</span></div>`;
-
+            document.getElementById('summaryContent').innerHTML = `<div class="summary-item"><span>Name:</span><span>${name}</span></div><div class="summary-item"><span>8 oz boxes:</span><span>${quantities.eight}</span></div><div class="summary-item"><span>4 oz boxes:</span><span>${quantities.four}</span></div><div class="summary-item"><span>Total:</span><span>$${total}</span></div><div class="summary-item"><span>Method:</span><span>${method}</span></div>${method === 'Pickup' ? `<div class="summary-item"><span>Window:</span><span>${window}</span></div>` : `<div class="summary-item"><span>Address:</span><span>${address}</span></div>`}<div class="summary-item"><span>Payment:</span><span>${pay}</span></div>`;
             try {
                 await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name, email: document.getElementById('email').value, phone: document.getElementById('phone').value, eight_oz: quantities.eight, four_oz: quantities.four, method, window, address, payment: pay, total, timestamp: new Date().toISOString() }) });
-                document.getElementById('formContainer').style.display = 'none';
-                document.getElementById('confirmation').classList.add('show');
-            } catch (error) {
-                alert('Error submitting. DM on IG!');
-                btn.disabled = false;
-            }
+                document.getElementById('formContainer').style.display = 'none'; document.getElementById('confirmation').classList.add('show');
+            } catch (error) { alert('Error submitting. DM on IG!'); btn.disabled = false; }
         });
     </script>
 </body>
