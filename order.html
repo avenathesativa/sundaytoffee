@@ -240,4 +240,14 @@
             const pay = document.querySelector('input[name="pay"]:checked').value;
             document.getElementById('summaryContent').innerHTML = `<div class="summary-item"><span>Name:</span><span>${name}</span></div><div class="summary-item"><span>8 oz boxes:</span><span>${quantities.eight}</span></div><div class="summary-item"><span>4 oz boxes:</span><span>${quantities.four}</span></div><div class="summary-item"><span>Total:</span><span>$${total}</span></div><div class="summary-item"><span>Method:</span><span>${method}</span></div>${method === 'Pickup' ? `<div class="summary-item"><span>Window:</span><span>${window}</span></div>` : `<div class="summary-item"><span>Address:</span><span>${address}</span></div>`}<div class="summary-item"><span>Payment:</span><span>${pay}</span></div>`;
             try {
-                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name, email: document.getElementById('email').value, phone: document.getElementById('phone').value, eight_oz: quantities.eight, four_oz: quantities.four, method, wi
+                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name, email: document.getElementById('email').value, phone: document.getElementById('phone').value, eight_oz: quantities.eight, four_oz: quantities.four, method, window: window, address, payment: pay, total }) });
+                document.getElementById('formContainer').style.display = 'none';
+                document.getElementById('confirmation').classList.add('show');
+            } catch (error) {
+                alert('There was an error submitting your order. Please try again or contact us directly.');
+                btn.disabled = false; btn.textContent = 'place order';
+            }
+        });
+    </script>
+</body>
+</html>
