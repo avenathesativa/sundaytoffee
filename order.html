@@ -62,6 +62,11 @@
     </style>
 </head>
 <body>
+    <!-- Vacation Banner -->
+    <div style="background: #F2E0C9; border-bottom: 1px solid #D4A574; text-align: center; padding: 0.9rem 1.5rem; font-size: 0.9rem; color: var(--primary-brown);">
+        🌴 I'm on vacation! Next available pickup is <strong>Sunday, March 15</strong>. Orders placed now will be ready then.
+    </div>
+
     <nav>
         <a href="index.html" class="logo">sunday toffee</a>
         <ul class="nav-links">
@@ -132,18 +137,25 @@
                         <script>
                             // Set pickup date immediately
                             (function() {
+                                // VACATION OVERRIDE: Remove this block and uncomment below when back from vacation
+                                const vacationReturnDate = new Date(2026, 2, 15); // March 15, 2026 (month is 0-indexed)
                                 const today = new Date();
-                                const dayOfWeek = today.getDay();
-                                const daysUntilSunday = dayOfWeek === 0 ? 7 : (7 - dayOfWeek);
-                                const upcomingSunday = new Date(today);
-                                upcomingSunday.setDate(today.getDate() + daysUntilSunday);
-                                const options = { weekday: 'long', month: 'long', day: 'numeric' };
-                                document.getElementById('pickupDate').textContent = upcomingSunday.toLocaleDateString('en-US', options);
+                                if (today < vacationReturnDate) {
+                                    const options = { weekday: 'long', month: 'long', day: 'numeric' };
+                                    document.getElementById('pickupDate').textContent = vacationReturnDate.toLocaleDateString('en-US', options);
+                                } else {
+                                    // Normal: calculate upcoming Sunday
+                                    const dayOfWeek = today.getDay();
+                                    const daysUntilSunday = dayOfWeek === 0 ? 7 : (7 - dayOfWeek);
+                                    const upcomingSunday = new Date(today);
+                                    upcomingSunday.setDate(today.getDate() + daysUntilSunday);
+                                    const options = { weekday: 'long', month: 'long', day: 'numeric' };
+                                    document.getElementById('pickupDate').textContent = upcomingSunday.toLocaleDateString('en-US', options);
+                                }
                             })();
                         </script>
                         <div class="radio-group">
-                            <label class="radio-option"><input type="radio" name="window" value="9AM - 12PM"> <span>9AM - 12PM</span></label>
-                            <label class="radio-option"><input type="radio" name="window" value="3PM - 6PM"> <span>3PM - 6PM</span></label>
+                            <label class="radio-option"><input type="radio" name="window" value="2PM - 4PM"> <span>2PM – 4PM</span></label>
                         </div>
                     </div>
                     <div id="deliveryDetails" class="method-details">
@@ -158,7 +170,7 @@
                     <h2 class="section-title">payment</h2>
                     <div class="radio-group">
                         <label class="radio-option"><input type="radio" name="pay" value="Venmo" required> <span>Venmo <span class="handle-detail">(@oats123)</span></span></label>
-                        <label class="radio-option"><input type="radio" name="pay" value="Zelle"> <span>Zelle <span class="handle-detail">(avenajiajia@gmail.com)</span></span></label>
+                        <label class="radio-option"><input type="radio" name="pay" value="Zelle"> <span>Zelle <span class="handle-detail">(<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="78190e1d1619121119121119381f15191114561b1715">[email&#160;protected]</a>)</span></span></label>
                         <label class="radio-option"><input type="radio" name="pay" value="Cash"> <span>Cash <span class="handle-detail">(i pinky promise to pay at pick up)</span></span></label>
                     </div>
                 </div>
@@ -175,13 +187,13 @@
             <div class="info-box" style="border-left-color: #A38C75; background: #faf8f5;">
                 <p style="font-weight: 500; color: var(--primary-brown);">Payment Reminder</p>
                 <p style="font-size: 0.9rem;">Venmo: @oats123 (last 4 digits: 7476)</p>
-                <p style="font-size: 0.9rem;">Zelle: avenajiajia@gmail.com</p>
+                <p style="font-size: 0.9rem;">Zelle: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f39285969d92999a92999a92b3949e929a9fdd909c9e">[email&#160;protected]</a></p>
                 <p style="font-size: 0.9rem;">Cash: pinky promise to pay at pick up or i will be sad</p>
             </div>
             <a href="index.html" style="display: inline-block; margin-top: 2rem; color: var(--primary-brown); text-decoration: none; font-weight: 500;">← back to home</a>
         </div>
     </div>
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         let quantities = { eight: 0, four: 0 };
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwT-mQefx2FonndoDe81zB0WGZJAh3A-s0Cc3nX5e6hmg0BN9KnEIrc4nqjpoWLqkZBSg/exec';
 
@@ -242,13 +254,4 @@
             document.getElementById('summaryContent').innerHTML = `<div class="summary-item"><span>Name:</span><span>${name}</span></div><div class="summary-item"><span>8 oz boxes:</span><span>${quantities.eight}</span></div><div class="summary-item"><span>4 oz boxes:</span><span>${quantities.four}</span></div><div class="summary-item"><span>Total:</span><span>$${total}</span></div><div class="summary-item"><span>Method:</span><span>${method}</span></div>${method === 'Pickup' ? `<div class="summary-item"><span>Window:</span><span>${window}</span></div>` : `<div class="summary-item"><span>Address:</span><span>${address}</span></div>`}<div class="summary-item"><span>Payment:</span><span>${pay}</span></div>`;
             try {
                 await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name, email: document.getElementById('email').value, phone: document.getElementById('phone').value, eight_oz: quantities.eight, four_oz: quantities.four, method, window: window, address, payment: pay, total }) });
-                document.getElementById('formContainer').style.display = 'none';
-                document.getElementById('confirmation').classList.add('show');
-            } catch (error) {
-                alert('There was an error submitting your order. Please try again or contact us directly.');
-                btn.disabled = false; btn.textContent = 'place order';
-            }
-        });
-    </script>
-</body>
-</html>
+                document.getElementById('formContainer').style.displa
