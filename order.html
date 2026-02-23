@@ -170,7 +170,6 @@
                     <h2 class="section-title">payment</h2>
                     <div class="radio-group">
                         <label class="radio-option"><input type="radio" name="pay" value="Venmo" required> <span>Venmo <span class="handle-detail">(@oats123)</span></span></label>
-                        <label class="radio-option"><input type="radio" name="pay" value="Zelle"> <span>Zelle <span class="handle-detail">(<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="78190e1d1619121119121119381f15191114561b1715">[email&#160;protected]</a>)</span></span></label>
                         <label class="radio-option"><input type="radio" name="pay" value="Cash"> <span>Cash <span class="handle-detail">(i pinky promise to pay at pick up)</span></span></label>
                     </div>
                 </div>
@@ -187,29 +186,22 @@
             <div class="info-box" style="border-left-color: #A38C75; background: #faf8f5;">
                 <p style="font-weight: 500; color: var(--primary-brown);">Payment Reminder</p>
                 <p style="font-size: 0.9rem;">Venmo: @oats123 (last 4 digits: 7476)</p>
-                <p style="font-size: 0.9rem;">Zelle: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f39285969d92999a92999a92b3949e929a9fdd909c9e">[email&#160;protected]</a></p>
                 <p style="font-size: 0.9rem;">Cash: pinky promise to pay at pick up or i will be sad</p>
             </div>
             <a href="index.html" style="display: inline-block; margin-top: 2rem; color: var(--primary-brown); text-decoration: none; font-weight: 500;">← back to home</a>
         </div>
     </div>
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script>
         let quantities = { eight: 0, four: 0 };
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwT-mQefx2FonndoDe81zB0WGZJAh3A-s0Cc3nX5e6hmg0BN9KnEIrc4nqjpoWLqkZBSg/exec';
 
         // Calculate upcoming Sunday
         function getUpcomingSunday() {
             const today = new Date();
-            const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
-            
-            // If today is Sunday, get next Sunday (7 days from now)
-            // Otherwise, get the upcoming Sunday
+            const dayOfWeek = today.getDay();
             const daysUntilSunday = dayOfWeek === 0 ? 7 : (7 - dayOfWeek);
-            
             const upcomingSunday = new Date(today);
             upcomingSunday.setDate(today.getDate() + daysUntilSunday);
-            
-            // Format as "Sunday, February 16"
             const options = { weekday: 'long', month: 'long', day: 'numeric' };
             return upcomingSunday.toLocaleDateString('en-US', options);
         }
@@ -228,6 +220,7 @@
                 radio.disabled = true; label.style.opacity = "0.4"; label.style.cursor = "not-allowed";
             }
         }
+
         function toggleMethod(m) {
             const pickupDetails = document.getElementById('pickupDetails');
             const deliveryDetails = document.getElementById('deliveryDetails');
@@ -240,6 +233,7 @@
                 addressField.required = true; document.querySelectorAll('input[name="window"]').forEach(i => i.checked = false);
             }
         }
+
         document.getElementById('orderForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const total = (quantities.eight * 10) + (quantities.four * 5);
@@ -249,9 +243,18 @@
             if (method === 'Delivery' && (!address || address.trim() === "")) { alert('Please enter a delivery address.'); return; }
             const btn = document.getElementById('submitBtn'); btn.disabled = true; btn.textContent = 'submitting...';
             const name = document.getElementById('name').value;
-            const window = document.querySelector('input[name="window"]:checked')?.value || 'N/A';
+            const pickupWindow = document.querySelector('input[name="window"]:checked')?.value || 'N/A';
             const pay = document.querySelector('input[name="pay"]:checked').value;
-            document.getElementById('summaryContent').innerHTML = `<div class="summary-item"><span>Name:</span><span>${name}</span></div><div class="summary-item"><span>8 oz boxes:</span><span>${quantities.eight}</span></div><div class="summary-item"><span>4 oz boxes:</span><span>${quantities.four}</span></div><div class="summary-item"><span>Total:</span><span>$${total}</span></div><div class="summary-item"><span>Method:</span><span>${method}</span></div>${method === 'Pickup' ? `<div class="summary-item"><span>Window:</span><span>${window}</span></div>` : `<div class="summary-item"><span>Address:</span><span>${address}</span></div>`}<div class="summary-item"><span>Payment:</span><span>${pay}</span></div>`;
+            document.getElementById('summaryContent').innerHTML = `<div class="summary-item"><span>Name:</span><span>${name}</span></div><div class="summary-item"><span>8 oz boxes:</span><span>${quantities.eight}</span></div><div class="summary-item"><span>4 oz boxes:</span><span>${quantities.four}</span></div><div class="summary-item"><span>Total:</span><span>$${total}</span></div><div class="summary-item"><span>Method:</span><span>${method}</span></div>${method === 'Pickup' ? `<div class="summary-item"><span>Window:</span><span>${pickupWindow}</span></div>` : `<div class="summary-item"><span>Address:</span><span>${address}</span></div>`}<div class="summary-item"><span>Payment:</span><span>${pay}</span></div>`;
             try {
-                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name, email: document.getElementById('email').value, phone: document.getElementById('phone').value, eight_oz: quantities.eight, four_oz: quantities.four, method, window: window, address, payment: pay, total }) });
-                document.getElementById('formContainer').style.displa
+                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name, email: document.getElementById('email').value, phone: document.getElementById('phone').value, eight_oz: quantities.eight, four_oz: quantities.four, method, window: pickupWindow, address, payment: pay, total }) });
+                document.getElementById('formContainer').style.display = 'none';
+                document.getElementById('confirmation').style.display = 'block';
+            } catch (err) {
+                document.getElementById('formContainer').style.display = 'none';
+                document.getElementById('confirmation').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
