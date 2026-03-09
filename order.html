@@ -63,11 +63,6 @@
     </style>
 </head>
 <body>
-    <!-- Vacation Banner -->
-    <div style="background: #F2E0C9; border-bottom: 1px solid #D4A574; text-align: center; padding: 0.9rem 1.5rem; font-size: 0.9rem; color: var(--primary-brown);">
-        🌴 I'm on vacation! Next available pickup is <strong>Sunday, March 15</strong>. Orders placed now will be ready then.
-    </div>
-
     <nav>
         <a href="index.html" class="logo">sunday toffee</a>
         <ul class="nav-links">
@@ -138,34 +133,33 @@
                         <script>
                             // Set pickup date immediately
                             (function() {
-                                // VACATION OVERRIDE: Remove this block and uncomment below when back from vacation
-                                const vacationReturnDate = new Date(2026, 2, 15); // March 15, 2026 (month is 0-indexed)
                                 const today = new Date();
-                                if (today < vacationReturnDate) {
-                                    const options = { weekday: 'long', month: 'long', day: 'numeric' };
-                                    document.getElementById('pickupDate').textContent = vacationReturnDate.toLocaleDateString('en-US', options);
-                                } else {
-                                    // Normal: calculate upcoming Sunday
-                                    const dayOfWeek = today.getDay();
-                                    const daysUntilSunday = dayOfWeek === 0 ? 7 : (7 - dayOfWeek);
-                                    const upcomingSunday = new Date(today);
-                                    upcomingSunday.setDate(today.getDate() + daysUntilSunday);
-                                    const options = { weekday: 'long', month: 'long', day: 'numeric' };
-                                    document.getElementById('pickupDate').textContent = upcomingSunday.toLocaleDateString('en-US', options);
-                                }
+                                const dayOfWeek = today.getDay();
+                                const daysUntilSunday = dayOfWeek === 0 ? 7 : (7 - dayOfWeek);
+                                const upcomingSunday = new Date(today);
+                                upcomingSunday.setDate(today.getDate() + daysUntilSunday);
+                                const options = { weekday: 'long', month: 'long', day: 'numeric' };
+                                document.getElementById('pickupDate').textContent = upcomingSunday.toLocaleDateString('en-US', options);
                             })();
                         </script>
                         <div class="radio-group">
                             <label class="radio-option"><input type="radio" name="window" value="2PM - 3PM"> <span>2PM – 3PM</span></label>
                             <label class="radio-option"><input type="radio" name="window" value="3PM - 4PM"> <span>3PM – 4PM</span></label>
+                            <label class="radio-option" style="border: 1px dashed rgba(164, 130, 100, 0.4); background: #faf8f5; align-items: flex-start; padding: 0.85rem 1.25rem; gap: 1rem;"><input type="radio" name="window" value="Flexible" style="margin-top: 3px; flex-shrink: 0;"> <span>Sunday doesn't work for me<br><span style="font-size: 0.8rem; color: var(--light-text); font-style: italic;"><a href="sms:5106217820" style="color: var(--primary-brown); text-decoration: none;">I'll text you to find another time!</a> (510-621-7820)</span></span></label>
                         </div>
-                        <p style="font-size: 0.82rem; color: var(--light-text); margin-top: 0.75rem; font-style: italic;">Can't make this time but really want toffee? Just <a href="sms:5106217820" style="color: var(--primary-brown); text-decoration: none;">text me</a>!</p>
                     </div>
                     <div id="deliveryDetails" class="method-details">
                         <div class="form-group">
                             <label>delivery address</label>
                             <p style="font-size: 0.85rem; color: var(--light-text); margin-bottom: 0.5rem;">Your order qualifies for free delivery in San Francisco!</p>
                             <textarea id="address" placeholder="Enter your San Francisco address"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>delivery window</label>
+                            <p style="font-size: 0.85rem; color: var(--light-text); margin-bottom: 0.75rem; font-style: italic;">Deliveries happen between 12–1:30PM so I can be back for afternoon pickups!</p>
+                            <div class="radio-group">
+                                <label class="radio-option" style="border: 1px dashed rgba(164, 130, 100, 0.4); background: #faf8f5; align-items: flex-start; padding: 0.85rem 1.25rem; gap: 1rem;"><input type="radio" name="deliveryWindow" value="Flexible" style="margin-top: 3px; flex-shrink: 0;"> <span>That time doesn't work for me<br><span style="font-size: 0.8rem; color: var(--light-text); font-style: italic;"><a href="sms:5106217820" style="color: var(--primary-brown); text-decoration: none;">I'll text you to coordinate!</a> (510-621-7820)</span></span></label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -174,6 +168,19 @@
                     <div class="radio-group">
                         <label class="radio-option"><input type="radio" name="pay" value="Venmo" required> <span>Venmo <span class="handle-detail">(@oats123)</span></span></label>
                         <label class="radio-option"><input type="radio" name="pay" value="Cash"> <span>Cash <span class="handle-detail">(i pinky promise to pay at pick up)</span></span></label>
+                    </div>
+                </div>
+                <div class="section">
+                    <h2 class="section-title">one last thing! <span style="font-style: italic; text-transform: none; letter-spacing: 0; font-size: 0.75rem; color: var(--light-text);">(optional)</span></h2>
+                    <div class="form-group">
+                        <label>how did you hear about me?</label>
+                        <div class="radio-group" style="margin-top: 0.5rem;">
+                            <label class="radio-option"><input type="radio" name="discovery" value="Word of mouth / a friend"> <span>Word of mouth / a friend</span></label>
+                            <label class="radio-option"><input type="radio" name="discovery" value="Instagram / Nextdoor"> <span>Instagram / Nextdoor</span></label>
+                            <label class="radio-option"><input type="radio" name="discovery" value="Walking by / saw a sign"> <span>Walking by / saw a sign</span></label>
+                            <label class="radio-option"><input type="radio" name="discovery" value="Other" onclick="document.getElementById('discoveryOther').style.display='block'"> <span>Other</span></label>
+                        </div>
+                        <input type="text" id="discoveryOther" placeholder="Tell me more!" style="display: none; margin-top: 0.5rem; width: 100%; padding: 0.6rem 0.75rem; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.9rem; color: inherit; background: white;">
                     </div>
                 </div>
                 <p style="text-align: center; font-size: 0.85rem; color: var(--light-text); margin-top: 2rem;">Have questions about your order? Text me at <a href="sms:5106217820" style="color: var(--primary-brown); text-decoration: none; font-weight: 400;">510-621-7820</a></p>
@@ -251,7 +258,11 @@
             const pay = document.querySelector('input[name="pay"]:checked').value;
             document.getElementById('summaryContent').innerHTML = `<div class="summary-item"><span>Name:</span><span>${name}</span></div><div class="summary-item"><span>8 oz boxes:</span><span>${quantities.eight}</span></div><div class="summary-item"><span>4 oz boxes:</span><span>${quantities.four}</span></div><div class="summary-item"><span>Total:</span><span>$${total}</span></div><div class="summary-item"><span>Method:</span><span>${method}</span></div>${method === 'Pickup' ? `<div class="summary-item"><span>Window:</span><span>${pickupWindow}</span></div>` : `<div class="summary-item"><span>Address:</span><span>${address}</span></div>`}<div class="summary-item"><span>Payment:</span><span>${pay}</span></div>`;
             try {
-                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name, email: document.getElementById('email').value, phone: document.getElementById('phone').value, eight_oz: quantities.eight, four_oz: quantities.four, method, window: pickupWindow, address, payment: pay, total }) });
+                const discoverySelected = document.querySelector('input[name="discovery"]:checked')?.value || '';
+                const discoveryOther = document.getElementById('discoveryOther').value;
+                const discovery = discoverySelected === 'Other' ? (discoveryOther.trim() || 'Other') : discoverySelected;
+                const feedback = document.getElementById('feedback').value;
+                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name, email: document.getElementById('email').value, phone: document.getElementById('phone').value, eight_oz: quantities.eight, four_oz: quantities.four, method, window: pickupWindow, pickupDate: getUpcomingSunday(), address, payment: pay, total, discovery, feedback }) });
                 document.getElementById('formContainer').style.display = 'none';
                 document.getElementById('confirmation').style.display = 'block';
             } catch (err) {
