@@ -1,0 +1,162 @@
+function doPost(e) {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var data = JSON.parse(e.postData.contents);
+    var sheet = ss.getSheetByName('Toffee Orders');
+
+    // Handle pickup day/time for BOTH forms
+    var pickupDay, pickupTime;
+    if (data.day && data.time) {
+      // Valentine's form sends separate day and time
+      pickupDay = data.day;
+      pickupTime = data.time;
+    } else if (data.window) {
+      // Regular order form sends combined window + actual date
+      pickupDay = data.pickupDate || "Sunday";
+      pickupTime = data.window;
+    } else {
+      pickupDay = '';
+      pickupTime = '';
+    }
+
+    // Format timestamp
+    var timestamp;
+    if (data.timestamp) {
+      var date = new Date(data.timestamp);
+      var month = String(date.getMonth() + 1).padStart(2, '0');
+      var day = String(date.getDate()).padStart(2, '0');
+      var year = date.getFullYear();
+      var hours = String(date.getHours()).padStart(2, '0');
+      var minutes = String(date.getMinutes()).padStart(2, '0');
+      var seconds = String(date.getSeconds()).padStart(2, '0');
+      timestamp = month + '/' + day + '/' + year + ' ' + hours + ':' + minutes + ':' + seconds;
+    } else {
+      var now = new Date();
+      var month = String(now.getMonth() + 1).padStart(2, '0');
+      var day = String(now.getDate()).padStart(2, '0');
+      var year = now.getFullYear();
+      var hours = String(now.getHours()).padStart(2, '0');
+      var minutes = String(now.getMinutes()).padStart(2, '0');
+      var seconds = String(now.getSeconds()).padStart(2, '0');
+      timestamp = month + '/' + day + '/' + year + ' ' + hours + ':' + minutes + ':' + seconds;
+    }
+
+    var rowData = [
+      timestamp,
+      data.name,
+      data.email,
+      data.phone,
+      data.eight_oz,
+      data.four_oz,
+      data.pink_boxes,
+      data.red_boxes,
+      data.white_boxes,
+      data.method || 'Pickup',
+      pickupDay,
+      pickupTime,
+      data.address,
+      data.payment,
+      '$' + data.total,
+      false,              // Picked Up?
+      false,              // Paid?
+      data.discovery || '',
+      data.feedback || ''
+    ];
+    sheet.appendRow(rowData);
+
+    var subject = "Order Confirmation - Sunday Toffee";
+    var orderSummary = "";
+    if (data.eight_oz > 0) orderSummary += "• 8 oz box x " + data.eight_oz + "\n";
+    if (data.four_oz > 0) orderSummary += "• 4 oz box x " + data.four_oz + "\n";
+    if (data.pink_boxes > 0) orderSummary += "• Pink Heart Box x " + data.pink_boxes + "\n";
+    if (data.red_boxes > 0) orderSummary += "• Red Heart Box x " + data.red_boxes + "\n";
+    if (data.white_boxes > 0) orderSummary += "• White Heart Box x " + data.white_boxes + "\n";
+
+    // Plain text version
+    var fulfillmentPlainText = (data.method === "Delivery")
+      ? "Fulfillment: Delivery to " + data.address
+      : "Fulfillment: Pickup is at 3639 Market Street (https://maps.app.goo.gl/P2sAxcqiENHMZJe37) - ring the first doorbell when you get here! If you are driving, feel free to temporarily park in front of the driveway for quick pick up.\n\nDay & Time: " + (pickupTime === "Flexible" ? "TBD — I'll text you to arrange a time!" : pickupDay + " during " + pickupTime);
+
+    // HTML version
+    var fulfillmentHTML = (data.method === "Delivery")
+      ? "<p><strong>Fulfillment:</strong> Delivery to " + data.address + "</p>"
+      : "<p><strong>Fulfillment:</strong> Pickup is at <a href='https://maps.app.goo.gl/P2sAxcqiENHMZJe37'>3639 Market Street</a> &mdash; ring the first doorbell when you get here! If you are driving, feel free to temporarily park in front of the driveway for quick pick up.</p>" + (pickupTime === "Flexible" ? "<p><strong>Day & Time:</strong> TBD &mdash; I'll text you to arrange a time!</p>" : "<p><strong>Day & Time:</strong> " + pickupDay + " during " + pickupTime + "</p>");
+
+    var messagePlainText = "Hi " + data.name + ",\n\n" +
+      "Thank you for your Sunday Toffee order! See you soon!\n\n" +
+      "ORDER SUMMARY:\n" + orderSummary +
+      "Total: $" + data.total + "\n\n" +
+      fulfillmentPlainText + "\n\n" +
+      "PAYMENT REMINDER:\n" +
+      "• Venmo: @oats123 (last 4 digits: 7476)\n" +
+      "• Zelle: avenajiajia@gmail.com\n" +
+      "• Cash: pinky promise to pay at pick up or i will be sad\n" +
+      "Warmly,\nAvena";
+
+    var messageHTML = "<p>Hi " + data.name + ",</p>" +
+      "<p>Thank you for your Sunday Toffee order! See you soon!</p>" +
+      "<h3>ORDER SUMMARY:</h3>" +
+      "<p>" + orderSummary.replace(/\n/g, "<br>") +
+      "Total: <strong>$" + data.total + "</strong></p>" +
+      fulfillmentHTML +
+      "<h3>PAYMENT REMINDER:</h3>" +
+      "<p>• Venmo: @oats123 (last 4 digits: 7476)<br>" +
+      "• Zelle: avenajiajia@gmail.com<br>" +
+      "• Cash: pinky promise to pay at pick up or i will be sad</p>" +
+      "<p>If you have any questions or need to make changes to your order, you can respond to this email or text me at 510-621-7820.</p>" +
+      "<p>Warmly,<br>Avena</p>";
+
+    // Send to customer
+    const me = Session.getActiveUser().getEmail();
+    const aliases = GmailApp.getAliases();
+    Logger.log(aliases);
+    if (data.email) {
+      if (aliases.length > 0) {
+        GmailApp.sendEmail(data.email, subject, messagePlainText, {
+          name: "Sunday Toffee",
+          from: aliases[0],
+          htmlBody: messageHTML
+        });
+      }
+    }
+
+    // Send notification to yourself about new order
+    var discoveryNote = data.discovery ? "\n\nDiscovered via: " + data.discovery : "";
+    var feedbackNote = data.feedback ? "\nFeedback: " + data.feedback : "";
+    GmailApp.sendEmail(
+      "avenajiajia@gmail.com",
+      "New Sunday Toffee Order!",
+      "New order received at " + timestamp + "\n\n" +
+      "CUSTOMER INFO:\n" +
+      "Name: " + data.name + "\n" +
+      "Email: " + data.email + "\n" +
+      "Phone: " + data.phone + "\n\n" +
+      "ORDER SUMMARY:\n" + orderSummary +
+      "Total: $" + data.total + "\n\n" +
+      fulfillmentPlainText + "\n\n" +
+      "Payment Method: " + data.payment +
+      discoveryNote + feedbackNote + "\n\n" +
+      "View in Sheets: https://docs.google.com/spreadsheets/d/1aMYtfGj0XfVVPL3K4x8bwcwLXIduO9J9GlLmNSF7dRY/edit?gid=1316233894#gid=1316233894",
+      {
+        htmlBody: "<p>New order received at <strong>" + timestamp + "</strong></p>" +
+          "<h3>CUSTOMER INFO:</h3>" +
+          "<p>Name: " + data.name + "<br>" +
+          "Email: " + data.email + "<br>" +
+          "Phone: " + data.phone + "</p>" +
+          "<h3>ORDER SUMMARY:</h3>" +
+          "<p>" + orderSummary.replace(/\n/g, "<br>") +
+          "Total: <strong>$" + data.total + "</strong></p>" +
+          fulfillmentHTML +
+          "<p>Payment Method: " + data.payment + "</p>" +
+          (data.discovery ? "<p>Discovered via: " + data.discovery + "</p>" : "") +
+          (data.feedback ? "<p>Feedback: " + data.feedback + "</p>" : "") +
+          "<p><a href='https://docs.google.com/spreadsheets/d/1aMYtfGj0XfVVPL3K4x8bwcwLXIduO9J9GlLmNSF7dRY/edit?gid=1316233894#gid=1316233894' style='display:inline-block; padding:10px 20px; background-color:#4CAF50; color:white; text-decoration:none; border-radius:5px;'>View in Sheets</a></p>"
+      }
+    );
+
+    return ContentService.createTextOutput(JSON.stringify({status: 'success'})).setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    Logger.log("Error: " + error.toString());
+    return ContentService.createTextOutput(JSON.stringify({status: 'error', message: error.toString()})).setMimeType(ContentService.MimeType.JSON);
+  }
+}
