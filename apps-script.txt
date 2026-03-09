@@ -12,7 +12,18 @@ function doPost(e) {
       pickupTime = data.time;
     } else if (data.window) {
       // Regular order form sends combined window + actual date
-      pickupDay = data.pickupDate || "Sunday";
+      if (data.pickupDate) {
+        pickupDay = data.pickupDate;
+      } else {
+        // Fallback: compute the upcoming Sunday server-side
+        var today = new Date();
+        var dayOfWeek = today.getDay();
+        var daysUntilSunday = dayOfWeek === 0 ? 7 : (7 - dayOfWeek);
+        var upcomingSunday = new Date(today);
+        upcomingSunday.setDate(today.getDate() + daysUntilSunday);
+        var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        pickupDay = 'Sunday, ' + months[upcomingSunday.getMonth()] + ' ' + upcomingSunday.getDate();
+      }
       pickupTime = data.window;
     } else {
       pickupDay = '';
@@ -103,7 +114,7 @@ function doPost(e) {
       "<p>• Venmo: @oats123 (last 4 digits: 7476)<br>" +
       "• Zelle: avenajiajia@gmail.com<br>" +
       "• Cash: pinky promise to pay at pick up or i will be sad</p>" +
-      "<p>If you have any questions or need to make changes to your order, you can respond to this email or text me at 510-621-7820.</p>" +
+      "<p>If you have any questions or need to make changes to your order, you can respond to this email or <a href='sms:5106217820' style='color: #786043; text-decoration: underline;'>text me at 510-621-7820</a>.</p>" +
       "<p>Warmly,<br>Avena</p>";
 
     // Send to customer
