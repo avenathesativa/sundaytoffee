@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-N0W7M8F5X0"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-N0W7M8F5X0');
+    </script>
     <title>Order | Sunday Toffee</title>
     <link rel="canonical" href="https://sundaytoffee.com/order.html" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -259,8 +267,8 @@
             document.getElementById('summaryContent').innerHTML = `<div class="summary-item"><span>Name:</span><span>${name}</span></div><div class="summary-item"><span>8 oz boxes:</span><span>${quantities.eight}</span></div><div class="summary-item"><span>4 oz boxes:</span><span>${quantities.four}</span></div><div class="summary-item"><span>Total:</span><span>$${total}</span></div><div class="summary-item"><span>Method:</span><span>${method}</span></div>${method === 'Pickup' ? `<div class="summary-item"><span>Window:</span><span>${pickupWindow}</span></div>` : `<div class="summary-item"><span>Address:</span><span>${address}</span></div>`}<div class="summary-item"><span>Payment:</span><span>${pay}</span></div>`;
             try {
                 const discoverySelected = document.querySelector('input[name="discovery"]:checked')?.value || '';
-                const discoveryOther = document.getElementById('discoveryOther').value;
-                const discovery = discoverySelected === 'Other' ? (discoveryOther.trim() || 'Other') : discoverySelected;
+                const discoveryOther = document.getElementById('discoveryOther').value.trim();
+                const discovery = discoverySelected === 'Other' ? (discoveryOther || 'Other') : discoverySelected;
                 await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name, email: document.getElementById('email').value, phone: document.getElementById('phone').value, eight_oz: quantities.eight, four_oz: quantities.four, method, window: pickupWindow, pickupDate: getUpcomingSunday(), address, payment: pay, total, discovery }) });
                 document.getElementById('formContainer').style.display = 'none';
                 document.getElementById('confirmation').style.display = 'block';

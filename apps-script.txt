@@ -68,12 +68,16 @@ function doPost(e) {
       data.address,
       data.payment,
       '$' + data.total,
-      false,              // Picked Up?
-      false,              // Paid?
       data.discovery || '',
-      data.feedback || ''
+      false,              // Picked Up?
+      false               // Paid?
     ];
     sheet.appendRow(rowData);
+
+    // Convert the FALSE values to actual checkboxes
+    var lastRow = sheet.getLastRow();
+    var checkboxRange = sheet.getRange(lastRow, rowData.length - 1, 1, 2); // Picked Up? & Paid? columns
+    checkboxRange.insertCheckboxes();
 
     var subject = "Order Confirmation - Sunday Toffee";
     var orderSummary = "";
@@ -114,7 +118,7 @@ function doPost(e) {
       "<p>• Venmo: @oats123 (last 4 digits: 7476)<br>" +
       "• Zelle: avenajiajia@gmail.com<br>" +
       "• Cash: pinky promise to pay at pick up or i will be sad</p>" +
-      "<p>If you have any questions or need to make changes to your order, you can respond to this email or <a href='sms:5106217820' style='color: #786043; text-decoration: underline;'>text me at 510-621-7820</a>.</p>" +
+      "<p>If you have any questions or need to make changes to your order, you can respond to this email or <a href='tel:5106217820' style='color: #1155cc; text-decoration: underline;'>text me at 510-621-7820</a>.</p>" +
       "<p>Warmly,<br>Avena</p>";
 
     // Send to customer
@@ -133,7 +137,6 @@ function doPost(e) {
 
     // Send notification to yourself about new order
     var discoveryNote = data.discovery ? "\n\nDiscovered via: " + data.discovery : "";
-    var feedbackNote = data.feedback ? "\nFeedback: " + data.feedback : "";
     GmailApp.sendEmail(
       "avenajiajia@gmail.com",
       "New Sunday Toffee Order!",
@@ -146,7 +149,7 @@ function doPost(e) {
       "Total: $" + data.total + "\n\n" +
       fulfillmentPlainText + "\n\n" +
       "Payment Method: " + data.payment +
-      discoveryNote + feedbackNote + "\n\n" +
+      discoveryNote + "\n\n" +
       "View in Sheets: https://docs.google.com/spreadsheets/d/1aMYtfGj0XfVVPL3K4x8bwcwLXIduO9J9GlLmNSF7dRY/edit?gid=1316233894#gid=1316233894",
       {
         htmlBody: "<p>New order received at <strong>" + timestamp + "</strong></p>" +
@@ -160,7 +163,6 @@ function doPost(e) {
           fulfillmentHTML +
           "<p>Payment Method: " + data.payment + "</p>" +
           (data.discovery ? "<p>Discovered via: " + data.discovery + "</p>" : "") +
-          (data.feedback ? "<p>Feedback: " + data.feedback + "</p>" : "") +
           "<p><a href='https://docs.google.com/spreadsheets/d/1aMYtfGj0XfVVPL3K4x8bwcwLXIduO9J9GlLmNSF7dRY/edit?gid=1316233894#gid=1316233894' style='display:inline-block; padding:10px 20px; background-color:#4CAF50; color:white; text-decoration:none; border-radius:5px;'>View in Sheets</a></p>"
       }
     );
