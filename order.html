@@ -63,10 +63,6 @@
         .method-details.active { display: block; }
         .btn-submit { width: 100%; padding: 1.1rem; background: var(--primary-brown); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 500; cursor: pointer; margin-top: 2.5rem; transition: background 0.2s; }
         .btn-submit:hover { background: var(--primary-brown-dark); }
-        #confirmation { display: none; text-align: center; padding: 4rem 0; }
-        #confirmation.show { display: block; }
-        .summary-list { margin-top: 1.5rem; font-size: 0.95rem; text-align: left; }
-        .summary-item { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #eee; }
         footer { text-align: center; padding: 4rem 0; }
     </style>
 </head>
@@ -195,20 +191,6 @@
                 <button type="submit" class="btn-submit" id="submitBtn">place order</button>
             </form>
         </div>
-        <div id="confirmation">
-            <h1 class="page-title">order received!</h1>
-            <p style="color: var(--light-text);">See you soon! Here is what I have:</p>
-            <div class="info-box" style="margin-top: 2rem; border-left-color: var(--primary-brown);">
-                <h3 style="font-family: 'Libre Baskerville'; font-size: 1rem; margin-bottom: 0.5rem;">Order Summary</h3>
-                <div id="summaryContent" class="summary-list"></div>
-            </div>
-            <div class="info-box" style="border-left-color: #A38C75; background: #faf8f5;">
-                <p style="font-weight: 500; color: var(--primary-brown);">Payment Reminder</p>
-                <p style="font-size: 0.9rem;">Venmo: @oats123 (last 4 digits: 7476)</p>
-                <p style="font-size: 0.9rem;">Cash: pinky promise to pay at pick up or i will be sad</p>
-            </div>
-            <a href="index.html" style="display: inline-block; margin-top: 2rem; color: var(--primary-brown); text-decoration: none; font-weight: 500;">← back to home</a>
-        </div>
     </div>
     <script>
         let quantities = { eight: 0, four: 0 };
@@ -264,17 +246,21 @@
             const name = document.getElementById('name').value;
             const pickupWindow = document.querySelector('input[name="window"]:checked')?.value || 'N/A';
             const pay = document.querySelector('input[name="pay"]:checked').value;
-            document.getElementById('summaryContent').innerHTML = `<div class="summary-item"><span>Name:</span><span>${name}</span></div><div class="summary-item"><span>8 oz boxes:</span><span>${quantities.eight}</span></div><div class="summary-item"><span>4 oz boxes:</span><span>${quantities.four}</span></div><div class="summary-item"><span>Total:</span><span>$${total}</span></div><div class="summary-item"><span>Method:</span><span>${method}</span></div>${method === 'Pickup' ? `<div class="summary-item"><span>Window:</span><span>${pickupWindow}</span></div>` : `<div class="summary-item"><span>Address:</span><span>${address}</span></div>`}<div class="summary-item"><span>Payment:</span><span>${pay}</span></div>`;
+
+            // Save order data for the thank-you page
+            sessionStorage.setItem('sundayToffeeOrder', JSON.stringify({
+                name, eight_oz: quantities.eight, four_oz: quantities.four,
+                total, method, window: pickupWindow, address, payment: pay
+            }));
+
             try {
                 const discoverySelected = document.querySelector('input[name="discovery"]:checked')?.value || '';
                 const discoveryOther = document.getElementById('discoveryOther').value.trim();
                 const discovery = discoverySelected === 'Other' ? (discoveryOther || 'Other') : discoverySelected;
                 await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name, email: document.getElementById('email').value, phone: document.getElementById('phone').value, eight_oz: quantities.eight, four_oz: quantities.four, method, window: pickupWindow, pickupDate: getUpcomingSunday(), address, payment: pay, total, discovery }) });
-                document.getElementById('formContainer').style.display = 'none';
-                document.getElementById('confirmation').style.display = 'block';
+                window.location.href = 'thank-you.html';
             } catch (err) {
-                document.getElementById('formContainer').style.display = 'none';
-                document.getElementById('confirmation').style.display = 'block';
+                window.location.href = 'thank-you.html';
             }
         });
     </script>

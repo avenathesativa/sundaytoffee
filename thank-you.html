@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-N0W7M8F5X0"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-N0W7M8F5X0');
+    </script>
+
+    <!--
+      =============================================
+      GOOGLE ADS CONVERSION TRACKING
+      =============================================
+      To set this up in Google Ads:
+      1. Go to Google Ads > Goals > Conversions > New conversion action
+      2. Choose "Website" and enter sundaytoffee.com
+      3. Set up a manual conversion using a page load rule for URL containing "/thank-you"
+      4. Copy the event snippet Google gives you and paste it below
+
+      It will look something like this:
+      <script>
+        gtag('event', 'conversion', {
+          'send_to': 'AW-XXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXX',
+          'value': 1.0,
+          'currency': 'USD'
+        });
+      </script>
+      =============================================
+    -->
+
+    <title>Order Confirmed | Sunday Toffee</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="https://sundaytoffee.com/thank-you.html" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary-brown: #786043;
+            --primary-brown-dark: #5D4A33;
+            --bg-cream: #F9F5EF;
+            --dark-text: #393939;
+            --light-text: #676767;
+            --accent-tan: #F2E0C9;
+            --border-tan: #E8D5D2;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark-text);
+            background-color: var(--bg-cream);
+            line-height: 1.6;
+            font-weight: 300;
+        }
+        nav { padding: 2rem 8%; display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto; }
+        .logo { font-family: 'Libre Baskerville', serif; font-size: 1.3rem; color: var(--primary-brown); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a { text-decoration: none; color: var(--light-text); font-size: 0.9rem; }
+        .thank-you-page { max-width: 550px; margin: 0 auto; padding: 2rem 1.5rem 5rem; text-align: center; }
+        .page-title { font-family: 'Libre Baskerville', serif; font-size: 2.2rem; font-weight: 400; color: var(--primary-brown); margin-bottom: 1rem; }
+        .info-box { background: white; border-left: 3px solid var(--primary-brown); padding: 1.25rem; border-radius: 0 8px 8px 0; margin-bottom: 1.5rem; text-align: left; }
+        .summary-list { margin-top: 0.5rem; font-size: 0.95rem; }
+        .summary-item { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #eee; }
+        .back-link { display: inline-block; margin-top: 2rem; color: var(--primary-brown); text-decoration: none; font-weight: 500; }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo">sunday toffee</a>
+        <ul class="nav-links">
+            <li><a href="index.html#products">what i make</a></li>
+            <li><a href="index.html#about">about</a></li>
+            <li><a href="order.html">order</a></li>
+        </ul>
+    </nav>
+
+    <div class="thank-you-page">
+        <h1 class="page-title">order received!</h1>
+        <p style="color: var(--light-text);">See you soon! Here is what I have:</p>
+
+        <div class="info-box" style="margin-top: 2rem;">
+            <h3 style="font-family: 'Libre Baskerville'; font-size: 1rem; margin-bottom: 0.5rem;">Order Summary</h3>
+            <div id="summaryContent" class="summary-list"></div>
+        </div>
+
+        <div class="info-box" style="border-left-color: #A38C75; background: #faf8f5;">
+            <p style="font-weight: 500; color: var(--primary-brown);">Payment Reminder</p>
+            <p style="font-size: 0.9rem;">Venmo: @oats123 (last 4 digits: 7476)</p>
+            <p style="font-size: 0.9rem;">Cash: pinky promise to pay at pick up or i will be sad</p>
+        </div>
+
+        <p style="font-size: 0.85rem; color: var(--light-text); margin-top: 1.5rem;">
+            Have questions? Text me at <a href="sms:5106217820" style="color: var(--primary-brown); text-decoration: none; font-weight: 400;">510-621-7820</a>
+        </p>
+
+        <a href="index.html" class="back-link">&larr; back to home</a>
+    </div>
+
+    <script>
+        // Read order data from sessionStorage (set by order.html before redirect)
+        try {
+            const orderData = JSON.parse(sessionStorage.getItem('sundayToffeeOrder'));
+            if (orderData) {
+                const summary = document.getElementById('summaryContent');
+                summary.innerHTML =
+                    `<div class="summary-item"><span>Name:</span><span>${orderData.name}</span></div>` +
+                    `<div class="summary-item"><span>8 oz boxes:</span><span>${orderData.eight_oz}</span></div>` +
+                    `<div class="summary-item"><span>4 oz boxes:</span><span>${orderData.four_oz}</span></div>` +
+                    `<div class="summary-item"><span>Total:</span><span>$${orderData.total}</span></div>` +
+                    `<div class="summary-item"><span>Method:</span><span>${orderData.method}</span></div>` +
+                    (orderData.method === 'Pickup'
+                        ? `<div class="summary-item"><span>Window:</span><span>${orderData.window}</span></div>`
+                        : `<div class="summary-item"><span>Address:</span><span>${orderData.address}</span></div>`) +
+                    `<div class="summary-item"><span>Payment:</span><span>${orderData.payment}</span></div>`;
+
+                // Clean up after displaying
+                sessionStorage.removeItem('sundayToffeeOrder');
+            } else {
+                // No order data — someone navigated here directly
+                document.getElementById('summaryContent').innerHTML =
+                    '<p style="color: var(--light-text); font-style: italic;">No order details found. If you just placed an order, check your email for confirmation!</p>';
+            }
+        } catch (e) {
+            document.getElementById('summaryContent').innerHTML =
+                '<p style="color: var(--light-text); font-style: italic;">No order details found. If you just placed an order, check your email for confirmation!</p>';
+        }
+    </script>
+</body>
+</html>
