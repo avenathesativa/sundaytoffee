@@ -108,11 +108,18 @@
             const orderData = JSON.parse(sessionStorage.getItem('sundayToffeeOrder'));
             if (orderData) {
                 const summary = document.getElementById('summaryContent');
+                let itemsHTML = '';
+                if (orderData.itemsDetailed) {
+                    itemsHTML = orderData.itemsDetailed.map(i =>
+                        `<div class="summary-item"><span>${i.label}</span><span>$${i.subtotal}</span></div>`
+                    ).join('');
+                } else {
+                    itemsHTML = `<div class="summary-item"><span>${orderData.items}</span><span></span></div>`;
+                }
                 summary.innerHTML =
                     `<div class="summary-item"><span>Name:</span><span>${orderData.name}</span></div>` +
-                    `<div class="summary-item"><span>8 oz boxes:</span><span>${orderData.eight_oz}</span></div>` +
-                    `<div class="summary-item"><span>4 oz boxes:</span><span>${orderData.four_oz}</span></div>` +
-                    `<div class="summary-item"><span>Total:</span><span>$${orderData.total}</span></div>` +
+                    itemsHTML +
+                    `<div class="summary-item" style="font-weight: 500;"><span>Total:</span><span>$${orderData.total}</span></div>` +
                     `<div class="summary-item"><span>Method:</span><span>${orderData.method}</span></div>` +
                     (orderData.method === 'Pickup'
                         ? `<div class="summary-item"><span>Window:</span><span>${orderData.window}</span></div>`

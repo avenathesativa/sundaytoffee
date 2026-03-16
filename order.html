@@ -43,11 +43,29 @@
         .page-title { font-family: 'Libre Baskerville', serif; font-size: 2.2rem; font-weight: 400; color: var(--primary-brown); margin-bottom: 1rem; }
         .section { margin-top: 3rem; }
         .section-title { font-family: 'Libre Baskerville', serif; font-size: 1.3rem; color: var(--primary-brown); border-bottom: 1px solid var(--border-tan); padding-bottom: 0.75rem; margin-bottom: 1.5rem; }
-        .product-card { background: white; border-radius: 8px; padding: 1.25rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-        .qty-controls { display: flex; align-items: center; gap: 1rem; }
+        .order-row { background: white; border-radius: 8px; padding: 1.25rem; margin-bottom: 0.75rem; }
+        .order-row-top { display: flex; justify-content: space-between; align-items: center; }
+        .order-row-info h3 { font-family: 'Libre Baskerville', serif; font-weight: 400; font-size: 1.1rem; }
+        .order-row-info p { color: var(--primary-brown); font-size: 0.95rem; margin-top: 0.15rem; }
+        .order-row-controls { display: flex; align-items: center; gap: 0.75rem; }
+        .qty-controls { display: flex; align-items: center; gap: 0.75rem; }
         .qty-btn { width: 36px; height: 36px; border: 1px solid var(--border-tan); border-radius: 50%; background: white; color: var(--primary-brown); cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
         .qty-btn:hover { background: var(--accent-tan); }
-        .total-bar { background: var(--accent-tan); border-radius: 8px; padding: 1rem 1.25rem; display: flex; justify-content: space-between; margin-top: 1rem; color: var(--primary-brown); font-weight: 500; font-size: 1.1rem; }
+        .qty-val { font-size: 1rem; min-width: 1.2rem; text-align: center; }
+        .remove-btn { width: 28px; height: 28px; border: none; background: none; color: var(--border-tan); cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.2s; }
+        .remove-btn:hover { background: #f0e0d0; color: var(--primary-brown); }
+        .size-toggle { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+        .size-chip, .choco-chip { padding: 0.4rem 0.85rem; border: 1.5px solid var(--border-tan); border-radius: 20px; background: white; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.8rem; color: var(--light-text); display: flex; align-items: center; gap: 0.4rem; transition: all 0.2s; }
+        .size-chip:hover, .choco-chip:hover { border-color: var(--primary-brown); }
+        .size-chip.selected, .choco-chip.selected { border-color: var(--primary-brown); background: var(--accent-tan); color: var(--primary-brown); }
+        .choco-row { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
+        .choco-swatch { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+        .swatch-milk { background: #9B6E4C; }
+        .swatch-semi { background: #5C3A1E; }
+        .swatch-dark { background: #2E1A0E; }
+        .add-row-btn { width: 100%; padding: 0.85rem; border: 1.5px dashed var(--border-tan); border-radius: 8px; background: none; font-family: 'Inter', sans-serif; font-size: 0.85rem; color: var(--primary-brown); cursor: pointer; transition: 0.2s; margin-bottom: 0.75rem; }
+        .add-row-btn:hover { background: white; border-color: var(--primary-brown); }
+        .total-bar { background: var(--accent-tan); border-radius: 8px; padding: 1rem 1.25rem; display: flex; justify-content: space-between; color: var(--primary-brown); font-weight: 500; font-size: 1.1rem; }
         .info-box { background: white; border-left: 3px solid var(--primary-brown); padding: 1.25rem; border-radius: 0 8px 8px 0; margin-bottom: 1.5rem; }
         .address-link { color: inherit; text-decoration: none; }
         .address-link:hover { text-decoration: underline; }
@@ -85,22 +103,8 @@
             <form id="orderForm">
                 <div class="section">
                     <h2 class="section-title">choose your toffee</h2>
-                    <div class="product-card">
-                        <div><h3 style="font-family: 'Libre Baskerville'; font-weight: 400;">8 oz box</h3><p style="color: var(--primary-brown);">$10</p></div>
-                        <div class="qty-controls">
-                            <button type="button" class="qty-btn" onclick="updateQty('eight', -1)">−</button>
-                            <span id="qty-eight">0</span>
-                            <button type="button" class="qty-btn" onclick="updateQty('eight', 1)">+</button>
-                        </div>
-                    </div>
-                    <div class="product-card">
-                        <div><h3 style="font-family: 'Libre Baskerville'; font-weight: 400;">4 oz box</h3><p style="color: var(--primary-brown);">$5</p></div>
-                        <div class="qty-controls">
-                            <button type="button" class="qty-btn" onclick="updateQty('four', -1)">−</button>
-                            <span id="qty-four">0</span>
-                            <button type="button" class="qty-btn" onclick="updateQty('four', 1)">+</button>
-                        </div>
-                    </div>
+                    <div id="order-rows"></div>
+                    <button type="button" class="add-row-btn" onclick="addRow()">+ i'd like another kind too</button>
                     <div class="total-bar"><span>order total</span><span id="total-display">$0</span></div>
                 </div>
                 <div class="section">
@@ -174,18 +178,16 @@
                         <label class="radio-option"><input type="radio" name="pay" value="Cash"> <span>Cash <span class="handle-detail">(i pinky promise to pay at pick up)</span></span></label>
                     </div>
                 </div>
-                <div class="section">
-                    <h2 class="section-title">one last thing! <span style="font-style: italic; text-transform: none; letter-spacing: 0; font-size: 0.75rem; color: var(--light-text);">(optional)</span></h2>
-                    <div class="form-group">
-                        <label>how did you hear about me?</label>
-                        <div class="radio-group" style="margin-top: 0.5rem;">
-                            <label class="radio-option"><input type="radio" name="discovery" value="Word of mouth / a friend"> <span>Word of mouth / a friend</span></label>
-                            <label class="radio-option"><input type="radio" name="discovery" value="Instagram / Nextdoor"> <span>Instagram / Nextdoor</span></label>
-                            <label class="radio-option"><input type="radio" name="discovery" value="Walking by / saw a sign"> <span>Walking by / saw a sign</span></label>
-                            <label class="radio-option"><input type="radio" name="discovery" value="Other" onclick="document.getElementById('discoveryOther').style.display='block'"> <span>Other</span></label>
-                        </div>
-                        <input type="text" id="discoveryOther" placeholder="Tell me more!" style="display: none; margin-top: 0.5rem; width: 100%; padding: 0.6rem 0.75rem; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.9rem; color: inherit; background: white;">
-                    </div>
+                <div class="form-group" style="margin-top: 2rem;">
+                    <label>how did you hear about me? <span style="color: var(--light-text); font-style: italic;">(optional)</span></label>
+                    <select id="discovery" style="width: 100%; padding: 0.9rem 1rem; border: 1px solid var(--border-tan); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.95rem; background: white; color: var(--dark-text); appearance: auto;" onchange="document.getElementById('discoveryOther').style.display = this.value === 'Other' ? 'block' : 'none'">
+                        <option value="">select one</option>
+                        <option value="Word of mouth / a friend">Word of mouth / a friend</option>
+                        <option value="Instagram / Nextdoor">Instagram / Nextdoor</option>
+                        <option value="Walking by / saw a sign">Walking by / saw a sign</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <input type="text" id="discoveryOther" placeholder="Tell me more!" style="display: none; margin-top: 0.5rem; width: 100%; padding: 0.6rem 0.75rem; border: 1px solid var(--border-tan); border-radius: 8px; font-family: inherit; font-size: 0.9rem; color: inherit; background: white;">
                 </div>
                 <p style="text-align: center; font-size: 0.85rem; color: var(--light-text); margin-top: 2rem;">Have questions about your order? Text me at <a href="sms:5106217820" style="color: var(--primary-brown); text-decoration: none; font-weight: 400;">510-621-7820</a></p>
                 <button type="submit" class="btn-submit" id="submitBtn">place order</button>
@@ -193,33 +195,118 @@
         </div>
     </div>
     <script>
-        let quantities = { eight: 0, four: 0 };
+        const PRICES = { '8 oz': 10, '4 oz': 5 };
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwT-mQefx2FonndoDe81zB0WGZJAh3A-s0Cc3nX5e6hmg0BN9KnEIrc4nqjpoWLqkZBSg/exec';
+        let rowId = 0;
 
-        // Calculate upcoming Sunday
+        function addRow(size = '8 oz', choco = 'Milk chocolate', qty = 1) {
+            const id = rowId++;
+            const container = document.getElementById('order-rows');
+            const row = document.createElement('div');
+            row.className = 'order-row';
+            row.dataset.id = id;
+            row.dataset.size = size;
+            row.dataset.choco = choco;
+            const sizeLabel = size === '8 oz' ? '8 oz box' : '4 oz box';
+            const sizePrice = PRICES[size];
+            row.innerHTML = `
+                <div class="order-row-top">
+                    <div class="order-row-info">
+                        <h3 data-field="label">${sizeLabel}</h3>
+                        <p data-field="price">$${sizePrice}</p>
+                    </div>
+                    <div class="order-row-controls">
+                        <div class="qty-controls">
+                            <button type="button" class="qty-btn" onclick="changeQty(this, -1)">−</button>
+                            <span class="qty-val" data-field="qty">${qty}</span>
+                            <button type="button" class="qty-btn" onclick="changeQty(this, 1)">+</button>
+                        </div>
+                        <button type="button" class="remove-btn" onclick="removeRow(this)" title="Remove">×</button>
+                    </div>
+                </div>
+                <div class="size-toggle">
+                    <button type="button" class="size-chip${size === '8 oz' ? ' selected' : ''}" onclick="setSize(this, '8 oz')">8 oz</button>
+                    <button type="button" class="size-chip${size === '4 oz' ? ' selected' : ''}" onclick="setSize(this, '4 oz')">4 oz</button>
+                </div>
+                <div class="choco-row">
+                    <button type="button" class="choco-chip${choco === 'Milk chocolate' ? ' selected' : ''}" onclick="setChoco(this, 'Milk chocolate')"><span class="choco-swatch swatch-milk"></span>milk</button>
+                    <button type="button" class="choco-chip${choco === 'Semi-sweet' ? ' selected' : ''}" onclick="setChoco(this, 'Semi-sweet')"><span class="choco-swatch swatch-semi"></span>semi-sweet</button>
+                    <button type="button" class="choco-chip${choco === 'Dark chocolate' ? ' selected' : ''}" onclick="setChoco(this, 'Dark chocolate')"><span class="choco-swatch swatch-dark"></span>dark</button>
+                </div>
+            `;
+            container.appendChild(row);
+            updateRemoveButtons();
+            recalc();
+        }
+
+        function setSize(btn, size) {
+            const row = btn.closest('.order-row');
+            row.dataset.size = size;
+            row.querySelectorAll('.size-chip').forEach(c => c.classList.remove('selected'));
+            btn.classList.add('selected');
+            row.querySelector('[data-field="label"]').textContent = size === '8 oz' ? '8 oz box' : '4 oz box';
+            row.querySelector('[data-field="price"]').textContent = `$${PRICES[size]}`;
+            recalc();
+        }
+
+        function setChoco(btn, choco) {
+            const row = btn.closest('.order-row');
+            row.dataset.choco = choco;
+            row.querySelectorAll('.choco-chip').forEach(c => c.classList.remove('selected'));
+            btn.classList.add('selected');
+        }
+
+        function changeQty(btn, delta) {
+            const span = btn.parentElement.querySelector('[data-field="qty"]');
+            const val = Math.max(1, parseInt(span.textContent) + delta);
+            span.textContent = val;
+            recalc();
+        }
+
+        function removeRow(btn) {
+            const rows = document.querySelectorAll('.order-row');
+            if (rows.length <= 1) return;
+            btn.closest('.order-row').remove();
+            updateRemoveButtons();
+            recalc();
+        }
+
+        function updateRemoveButtons() {
+            const rows = document.querySelectorAll('.order-row');
+            rows.forEach(row => {
+                row.querySelector('.remove-btn').style.visibility = rows.length > 1 ? 'visible' : 'hidden';
+            });
+        }
+
+        function getRows() {
+            return Array.from(document.querySelectorAll('.order-row')).map(row => ({
+                size: row.dataset.size,
+                choco: row.dataset.choco,
+                qty: parseInt(row.querySelector('[data-field="qty"]').textContent)
+            }));
+        }
+
+        function recalc() {
+            const rows = getRows();
+            const total = rows.reduce((sum, r) => sum + PRICES[r.size] * r.qty, 0);
+            document.getElementById('total-display').textContent = `$${total}`;
+            const radio = document.getElementById('deliveryRadio');
+            const label = document.getElementById('deliveryLabel');
+            if (total >= 50) {
+                radio.disabled = false; label.style.opacity = '1'; label.style.cursor = 'pointer';
+            } else {
+                if (radio.checked) { document.querySelector('input[value="Pickup"]').checked = true; toggleMethod('pickup'); }
+                radio.disabled = true; label.style.opacity = '0.4'; label.style.cursor = 'not-allowed';
+            }
+        }
+
         function getUpcomingSunday() {
             const today = new Date();
             const dayOfWeek = today.getDay();
             const daysUntilSunday = dayOfWeek === 0 ? 7 : (7 - dayOfWeek);
             const upcomingSunday = new Date(today);
             upcomingSunday.setDate(today.getDate() + daysUntilSunday);
-            const options = { weekday: 'long', month: 'long', day: 'numeric' };
-            return upcomingSunday.toLocaleDateString('en-US', options);
-        }
-
-        function updateQty(type, change) {
-            quantities[type] = Math.max(0, quantities[type] + change);
-            document.getElementById(`qty-${type}`).innerText = quantities[type];
-            const total = (quantities.eight * 10) + (quantities.four * 5);
-            document.getElementById('total-display').innerText = `$${total}`;
-            const radio = document.getElementById('deliveryRadio');
-            const label = document.getElementById('deliveryLabel');
-            if (total >= 50) {
-                radio.disabled = false; label.style.opacity = "1"; label.style.cursor = "pointer";
-            } else {
-                if (radio.checked) { document.querySelector('input[value="Pickup"]').checked = true; toggleMethod('pickup'); }
-                radio.disabled = true; label.style.opacity = "0.4"; label.style.cursor = "not-allowed";
-            }
+            return upcomingSunday.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
         }
 
         function toggleMethod(m) {
@@ -228,7 +315,7 @@
             const addressField = document.getElementById('address');
             if (m === 'pickup') {
                 pickupDetails.classList.add('active'); deliveryDetails.classList.remove('active');
-                addressField.required = false; addressField.value = "";
+                addressField.required = false; addressField.value = '';
             } else {
                 pickupDetails.classList.remove('active'); deliveryDetails.classList.add('active');
                 addressField.required = true; document.querySelectorAll('input[name="window"]').forEach(i => i.checked = false);
@@ -237,32 +324,43 @@
 
         document.getElementById('orderForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const total = (quantities.eight * 10) + (quantities.four * 5);
-            if (total === 0) { alert('Select a box!'); return; }
+            const rows = getRows();
+            const total = rows.reduce((sum, r) => sum + PRICES[r.size] * r.qty, 0);
+            if (total === 0 || rows.length === 0) { alert('Add at least one box!'); return; }
             const method = document.querySelector('input[name="method"]:checked').value;
             const address = document.getElementById('address').value;
-            if (method === 'Delivery' && (!address || address.trim() === "")) { alert('Please enter a delivery address.'); return; }
+            if (method === 'Delivery' && (!address || address.trim() === '')) { alert('Please enter a delivery address.'); return; }
             const btn = document.getElementById('submitBtn'); btn.disabled = true; btn.textContent = 'submitting...';
             const name = document.getElementById('name').value;
             const pickupWindow = document.querySelector('input[name="window"]:checked')?.value || 'N/A';
             const pay = document.querySelector('input[name="pay"]:checked').value;
+            const items = rows.map(r => `${r.qty}x ${r.size} ${r.choco}`).join(', ');
 
-            // Save order data for the thank-you page
+            const itemsDetailed = rows.map(r => ({
+                label: `${r.qty}x ${r.size} ${r.choco}`,
+                subtotal: PRICES[r.size] * r.qty
+            }));
             sessionStorage.setItem('sundayToffeeOrder', JSON.stringify({
-                name, eight_oz: quantities.eight, four_oz: quantities.four,
-                total, method, window: pickupWindow, address, payment: pay
+                name, items, itemsDetailed, total, method, window: pickupWindow, address, payment: pay
             }));
 
             try {
-                const discoverySelected = document.querySelector('input[name="discovery"]:checked')?.value || '';
+                const discoverySelected = document.getElementById('discovery').value;
                 const discoveryOther = document.getElementById('discoveryOther').value.trim();
                 const discovery = discoverySelected === 'Other' ? (discoveryOther || 'Other') : discoverySelected;
-                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name, email: document.getElementById('email').value, phone: document.getElementById('phone').value, eight_oz: quantities.eight, four_oz: quantities.four, method, window: pickupWindow, pickupDate: getUpcomingSunday(), address, payment: pay, total, discovery }) });
+                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({
+                    name, email: document.getElementById('email').value, phone: document.getElementById('phone').value,
+                    items, rows, method, window: pickupWindow, pickupDate: getUpcomingSunday(),
+                    address, payment: pay, total, discovery
+                }) });
                 window.location.href = 'thank-you.html';
             } catch (err) {
                 window.location.href = 'thank-you.html';
             }
         });
+
+        // Start with one default row
+        addRow();
     </script>
 </body>
 </html>
