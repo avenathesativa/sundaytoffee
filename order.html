@@ -54,10 +54,9 @@
         .qty-val { font-size: 1rem; min-width: 1.2rem; text-align: center; }
         .remove-btn { width: 28px; height: 28px; border: none; background: none; color: var(--border-tan); cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: 0.2s; }
         .remove-btn:hover { background: #f0e0d0; color: var(--primary-brown); }
-        .size-toggle { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
-        .size-chip, .choco-chip { padding: 0.4rem 0.85rem; border: 1.5px solid var(--border-tan); border-radius: 20px; background: white; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.8rem; color: var(--light-text); display: flex; align-items: center; gap: 0.4rem; transition: all 0.2s; }
-        .size-chip:hover, .choco-chip:hover { border-color: var(--primary-brown); }
-        .size-chip.selected, .choco-chip.selected { border-color: var(--primary-brown); background: var(--accent-tan); color: var(--primary-brown); }
+        .choco-chip { padding: 0.4rem 0.85rem; border: 1.5px solid var(--border-tan); border-radius: 20px; background: white; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 0.8rem; color: var(--light-text); display: flex; align-items: center; gap: 0.4rem; transition: all 0.2s; }
+        .choco-chip:hover { border-color: var(--primary-brown); }
+        .choco-chip.selected { border-color: var(--primary-brown); background: var(--accent-tan); color: var(--primary-brown); }
         .choco-row { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
         .choco-swatch { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
         .swatch-milk { background: #9B6E4C; }
@@ -195,25 +194,23 @@
         </div>
     </div>
     <script>
-        const PRICES = { '8 oz': 10, '4 oz': 5 };
+        const PRICES = { '8 oz': 10 };
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwT-mQefx2FonndoDe81zB0WGZJAh3A-s0Cc3nX5e6hmg0BN9KnEIrc4nqjpoWLqkZBSg/exec';
         let rowId = 0;
 
-        function addRow(size = '8 oz', choco = 'Milk chocolate', qty = 1) {
+        function addRow(choco = 'Milk chocolate', qty = 1) {
             const id = rowId++;
             const container = document.getElementById('order-rows');
             const row = document.createElement('div');
             row.className = 'order-row';
             row.dataset.id = id;
-            row.dataset.size = size;
+            row.dataset.size = '8 oz';
             row.dataset.choco = choco;
-            const sizeLabel = size === '8 oz' ? '8 oz box' : '4 oz box';
-            const sizePrice = PRICES[size];
             row.innerHTML = `
                 <div class="order-row-top">
                     <div class="order-row-info">
-                        <h3 data-field="label">${sizeLabel}</h3>
-                        <p data-field="price">$${sizePrice}</p>
+                        <h3>8 oz box</h3>
+                        <p data-field="price">$10</p>
                     </div>
                     <div class="order-row-controls">
                         <div class="qty-controls">
@@ -224,10 +221,6 @@
                         <button type="button" class="remove-btn" onclick="removeRow(this)" title="Remove">×</button>
                     </div>
                 </div>
-                <div class="size-toggle">
-                    <button type="button" class="size-chip${size === '8 oz' ? ' selected' : ''}" onclick="setSize(this, '8 oz')">8 oz</button>
-                    <button type="button" class="size-chip${size === '4 oz' ? ' selected' : ''}" onclick="setSize(this, '4 oz')">4 oz</button>
-                </div>
                 <div class="choco-row">
                     <button type="button" class="choco-chip${choco === 'Milk chocolate' ? ' selected' : ''}" onclick="setChoco(this, 'Milk chocolate')"><span class="choco-swatch swatch-milk"></span>milk</button>
                     <button type="button" class="choco-chip${choco === 'Semi-sweet' ? ' selected' : ''}" onclick="setChoco(this, 'Semi-sweet')"><span class="choco-swatch swatch-semi"></span>semi-sweet</button>
@@ -236,16 +229,6 @@
             `;
             container.appendChild(row);
             updateRemoveButtons();
-            recalc();
-        }
-
-        function setSize(btn, size) {
-            const row = btn.closest('.order-row');
-            row.dataset.size = size;
-            row.querySelectorAll('.size-chip').forEach(c => c.classList.remove('selected'));
-            btn.classList.add('selected');
-            row.querySelector('[data-field="label"]').textContent = size === '8 oz' ? '8 oz box' : '4 oz box';
-            row.querySelector('[data-field="price"]').textContent = `$${PRICES[size]}`;
             recalc();
         }
 
