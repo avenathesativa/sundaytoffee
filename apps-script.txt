@@ -4,15 +4,65 @@ function doPost(e) {
 
     // Handle "I'm here" arrival notifications
     if (data.action === 'arrived') {
+      // Look up the customer's most recent order from the sheet
+      var ss = SpreadsheetApp.getActiveSpreadsheet();
+      var sheet = ss.getSheetByName('Toffee Orders');
+      var allData = sheet.getDataRange().getValues();
+      var orderInfo = '';
+      var orderInfoHTML = '';
+
+      // Search from bottom (most recent) to top for matching name
+      for (var i = allData.length - 1; i >= 1; i--) {
+        var rowName = (allData[i][1] || '').toString().trim().toLowerCase();
+        var arrivedName = (data.name || '').toString().trim().toLowerCase();
+        if (rowName === arrivedName) {
+          var name = allData[i][1];
+          var email = allData[i][2];
+          var phone = allData[i][3];
+          var eightMilk = allData[i][4];
+          var eightSemi = allData[i][5];
+          var eightDark = allData[i][6];
+          var payment = allData[i][17];
+          var total = allData[i][18];
+
+          // Build order items string
+          var items = [];
+          if (eightMilk) items.push(eightMilk + 'x 8 oz Milk chocolate');
+          if (eightSemi) items.push(eightSemi + 'x 8 oz Semi-sweet');
+          if (eightDark) items.push(eightDark + 'x 8 oz Dark chocolate');
+          var itemsStr = items.length > 0 ? items.join(', ') : 'See sheet';
+
+          orderInfo = "\n\nORDER DETAILS:\n" +
+            "Name: " + name + "\n" +
+            "Email: " + email + "\n" +
+            "Phone: " + phone + "\n" +
+            "Items: " + itemsStr + "\n" +
+            "Total: " + total + "\n" +
+            "Payment: " + payment;
+
+          orderInfoHTML =
+            "<hr style='border: none; border-top: 1px solid #eee; margin: 16px 0;'>" +
+            "<h3 style='color: #786043; margin: 0 0 8px; font-size: 14px;'>ORDER DETAILS</h3>" +
+            "<p style='color: #555; font-size: 14px; margin: 4px 0;'>Name: " + name + "</p>" +
+            "<p style='color: #555; font-size: 14px; margin: 4px 0;'>Email: " + email + "</p>" +
+            "<p style='color: #555; font-size: 14px; margin: 4px 0;'>Phone: " + phone + "</p>" +
+            "<p style='color: #555; font-size: 14px; margin: 4px 0;'>Items: " + itemsStr + "</p>" +
+            "<p style='color: #555; font-size: 14px; margin: 4px 0;'>Total: <strong>" + total + "</strong></p>" +
+            "<p style='color: #555; font-size: 14px; margin: 4px 0;'>Payment: " + payment + "</p>";
+          break;
+        }
+      }
+
       GmailApp.sendEmail(
         "avenajiajia@gmail.com",
-        "🟢 " + data.name + " is here for pickup!",
-        data.name + " just tapped 'I'm here' and is waiting for their toffee!\n\nTime: " + new Date().toLocaleString('en-US', {timeZone: 'America/Los_Angeles'}),
+        data.name + " is here for pickup!",
+        data.name + " just tapped 'I'm here' and is waiting for their toffee!\n\nTime: " + new Date().toLocaleString('en-US', {timeZone: 'America/Los_Angeles'}) + orderInfo,
         {
           htmlBody: "<div style='font-family: sans-serif; padding: 20px;'>" +
-            "<h2 style='color: #786043; margin: 0 0 10px;'>🟢 " + data.name + " is here!</h2>" +
+            "<h2 style='color: #786043; margin: 0 0 10px;'>" + data.name + " is here!</h2>" +
             "<p style='color: #555; font-size: 16px;'>They just tapped <strong>I'm here</strong> and are waiting for their toffee.</p>" +
             "<p style='color: #999; font-size: 14px;'>" + new Date().toLocaleString('en-US', {timeZone: 'America/Los_Angeles'}) + "</p>" +
+            orderInfoHTML +
             "</div>"
         }
       );
