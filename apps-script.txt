@@ -185,6 +185,12 @@ function doPost(e) {
     // "I'm here" link
     var arrivedLink = "https://sundaytoffee.com/arrived.html?name=" + encodeURIComponent(data.name);
 
+    // Extract the time window from the pickup value (e.g. "2PM - 3PM @ 3639 Market St" → "2PM – 3PM")
+    var timeWindowText = '';
+    if (pickupTime && pickupTime.indexOf(' @ ') > -1) {
+      timeWindowText = pickupTime.split(' @ ')[0].replace(' - ', ' – ');
+    }
+
     // Plain text version
     var fulfillmentPlainText;
     if (data.method === "Delivery") {
@@ -192,9 +198,9 @@ function doPost(e) {
     } else if (pickupTime === "Flexible") {
       fulfillmentPlainText = "Fulfillment: TBD — I'll text you to arrange a time!";
     } else if (isPageSt) {
-      fulfillmentPlainText = "Fulfillment: Pickup at 55 Page Street, San Francisco (https://maps.app.goo.gl/DCa1x8vuQUtsp3mP8)\n\nDay & Time: " + pickupDay + " during 1PM – 2PM\n\nWhen you arrive, tap this link to let me know you're here: " + arrivedLink;
+      fulfillmentPlainText = "Fulfillment: Pickup at 55 Page Street, San Francisco (https://maps.app.goo.gl/DCa1x8vuQUtsp3mP8)\n\nDay & Time: " + pickupDay + " during " + timeWindowText + "\n\nWhen you arrive, tap this link to let me know you're here: " + arrivedLink;
     } else {
-      fulfillmentPlainText = "Fulfillment: Pickup at 3639 Market Street, San Francisco (https://maps.app.goo.gl/P2sAxcqiENHMZJe37) - ring the first doorbell when you get here! If you are driving, feel free to temporarily park in front of the driveway for quick pick up.\n\nDay & Time: " + pickupDay + " during 2:30PM – 4PM";
+      fulfillmentPlainText = "Fulfillment: Pickup at 3639 Market Street, San Francisco (https://maps.app.goo.gl/P2sAxcqiENHMZJe37) - ring the first doorbell when you get here! If you are driving, feel free to temporarily park in front of the driveway for quick pick up.\n\nDay & Time: " + pickupDay + " during " + timeWindowText;
     }
 
     // HTML version
@@ -205,12 +211,14 @@ function doPost(e) {
       fulfillmentHTML = "<p><strong>Day & Time:</strong> TBD &mdash; I'll text you to arrange a time!</p>";
     } else if (isPageSt) {
       fulfillmentHTML = "<p><strong>Fulfillment:</strong> Pickup at <a href='https://maps.app.goo.gl/DCa1x8vuQUtsp3mP8'>55 Page Street, San Francisco</a></p>" +
-        "<p><strong>Day & Time:</strong> " + pickupDay + " during 1PM &ndash; 2PM</p>" +
-        "<div style='margin: 16px 0; text-align: center;'><a href='" + arrivedLink + "' style='display: inline-block; padding: 14px 28px; background-color: #786043; color: white; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: 500;'>I&rsquo;m here for pickup!</a></div>" +
-        "<p style='font-size: 13px; color: #999; text-align: center;'>Tap the button when you arrive and I'll be right out with your toffee.</p>";
+        "<p><strong>Day & Time:</strong> " + pickupDay + " during " + timeWindowText + "</p>" +
+        "<div style='margin: 24px 0; text-align: center; background: #faf8f5; border-radius: 10px; padding: 20px;'>" +
+        "<p style='font-size: 14px; color: #786043; margin: 0 0 12px; font-weight: 500;'>When you arrive, tap the button below to let me know:</p>" +
+        "<a href='" + arrivedLink + "' style='display: inline-block; padding: 16px 32px; background-color: #E8740C; color: white; text-decoration: none; border-radius: 8px; font-size: 17px; font-weight: 600; letter-spacing: 0.02em;'>I&rsquo;m here for pickup!</a>" +
+        "</div>";
     } else {
       fulfillmentHTML = "<p><strong>Fulfillment:</strong> Pickup at <a href='https://maps.app.goo.gl/EZmuY7BPceEqVesBA'>3639 Market Street, San Francisco</a> &mdash; ring the first doorbell when you get here! If you are driving, feel free to temporarily park in front of the driveway for quick pick up.</p>" +
-        "<p><strong>Day & Time:</strong> " + pickupDay + " during 2:30PM &ndash; 4PM</p>";
+        "<p><strong>Day & Time:</strong> " + pickupDay + " during " + timeWindowText + "</p>";
     }
 
     var messagePlainText = "Hi " + data.name + ",\n\n" +
@@ -288,4 +296,486 @@ function doPost(e) {
     Logger.log("Error: " + error.toString());
     return ContentService.createTextOutput(JSON.stringify({status: 'error', message: error.toString()})).setMimeType(ContentService.MimeType.JSON);
   }
+}
+
+
+// ============================================================
+// HELPER: Get the upcoming Sunday as a formatted string
+// matching how pickupDay is stored in the sheet
+// ============================================================
+function getUpcomingSundayString() {
+  var today = new Date();
+  var dayOfWeek = today.getDay(); // 0 = Sunday
+  var daysUntilSunday = dayOfWeek === 0 ? 0 : (7 - dayOfWeek);
+  var sunday = new Date(today);
+  sunday.setDate(today.getDate() + daysUntilSunday);
+  var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  return 'Sunday, ' + months[sunday.getMonth()] + ' ' + sunday.getDate();
+}
+
+
+// ============================================================
+// HELPER: Get all orders for a specific pickup day string
+// Returns array of order objects
+// ============================================================
+function getOrdersForDay(pickupDayString) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('Toffee Orders');
+  var allData = sheet.getDataRange().getValues();
+  var orders = [];
+
+  for (var i = 1; i < allData.length; i++) {
+    var rawValue = allData[i][14];
+
+    // Normalize: Sheets may store the pickup day as a Date object or a string
+    var rowPickupDay;
+    if (rawValue instanceof Date) {
+      var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      rowPickupDay = days[rawValue.getDay()] + ', ' + months[rawValue.getMonth()] + ' ' + rawValue.getDate();
+    } else {
+      rowPickupDay = (rawValue || '').toString().trim();
+    }
+
+    // Match against the pickup day string (e.g. "Sunday, April 5")
+    if (rowPickupDay === pickupDayString) {
+      orders.push({
+        name: allData[i][1],
+        email: allData[i][2],
+        phone: allData[i][3],
+        eightMilk: allData[i][4] || 0,
+        eightSemi: allData[i][5] || 0,
+        eightDark: allData[i][6] || 0,
+        fourMilk: allData[i][7] || 0,
+        fourSemi: allData[i][8] || 0,
+        fourDark: allData[i][9] || 0,
+        method: allData[i][13],
+        pickupDay: allData[i][14],
+        pickupTime: allData[i][15],
+        address: allData[i][16],
+        payment: allData[i][17],
+        total: allData[i][18],
+        pickedUp: allData[i][20],
+        paid: allData[i][21]
+      });
+    }
+  }
+  return orders;
+}
+
+
+// ============================================================
+// FEATURE 1: Sunday Morning Pickup Reminders
+// Set up a time-driven trigger to run this every Sunday at 8 AM PT
+// ============================================================
+function sendPickupReminders(testMode) {
+  var sundayStr = getUpcomingSundayString();
+  var orders = getOrdersForDay(sundayStr);
+
+  if (orders.length === 0) {
+    Logger.log('No orders found for ' + sundayStr + ', skipping reminders.');
+    return;
+  }
+
+  var aliases = GmailApp.getAliases();
+  var fromAlias = aliases.length > 0 ? aliases[0] : null;
+
+  for (var i = 0; i < orders.length; i++) {
+    var order = orders[i];
+
+    // Skip if no email
+    if (!order.email) continue;
+
+    // Skip delivery orders (they don't need a pickup reminder)
+    if (order.method === 'Delivery') continue;
+
+    // Build order items string
+    var items = [];
+    if (order.eightMilk) items.push(order.eightMilk + 'x 8 oz Milk chocolate');
+    if (order.eightSemi) items.push(order.eightSemi + 'x 8 oz Semi-sweet');
+    if (order.eightDark) items.push(order.eightDark + 'x 8 oz Dark chocolate');
+    if (order.fourMilk) items.push(order.fourMilk + 'x 4 oz Milk chocolate');
+    if (order.fourSemi) items.push(order.fourSemi + 'x 4 oz Semi-sweet');
+    if (order.fourDark) items.push(order.fourDark + 'x 4 oz Dark chocolate');
+    var itemsStr = items.join(', ');
+
+    // Determine pickup location details
+    var pickupTime = (order.pickupTime || '').toString();
+    var isPageSt = pickupTime.indexOf('55 Page St') > -1;
+    var isFlexible = pickupTime === 'Flexible';
+
+    // Extract time window from the pickup value (e.g. "2PM - 3PM @ 3639 Market St" → "2PM – 3PM")
+    var timeWindow = '';
+    if (pickupTime && pickupTime.indexOf(' @ ') > -1) {
+      timeWindow = pickupTime.split(' @ ')[0].replace(' - ', ' – ');
+    }
+
+    var locationName, locationLink;
+    if (isPageSt) {
+      locationName = '55 Page Street, San Francisco (Hayes Valley)';
+      locationLink = 'https://maps.app.goo.gl/DCa1x8vuQUtsp3mP8';
+    } else if (isFlexible) {
+      locationName = 'TBD';
+      locationLink = '';
+      timeWindow = "We'll coordinate via text!";
+    } else {
+      locationName = '3639 Market Street, San Francisco (Eureka Valley)';
+      locationLink = 'https://maps.app.goo.gl/EZmuY7BPceEqVesBA';
+    }
+
+    // "I'm here" link
+    var arrivedLink = "https://sundaytoffee.com/arrived.html?name=" + encodeURIComponent(order.name);
+
+    // Build the reminder email
+    var subject = "Reminder: Your toffee is ready for pickup today!";
+
+    var plainText = "Hi " + order.name + ",\n\n" +
+      "Just a friendly reminder — your Sunday Toffee order is ready for pickup today!\n\n" +
+      "YOUR ORDER:\n" + itemsStr + "\n" +
+      "Total: " + order.total + "\n\n" +
+      "PICKUP DETAILS:\n" +
+      "Location: " + locationName + "\n" +
+      "Time: " + timeWindow + "\n\n" +
+      (order.payment === 'Venmo' ? "PAYMENT REMINDER:\nVenmo: @oats123 (last 4 digits: 7476)\nZelle: avenajiajia@gmail.com\n\n" : "") +
+      "See you soon!\nAvena";
+
+    // Pickup-specific HTML
+    var pickupHTML;
+    if (isFlexible) {
+      pickupHTML = "<p><strong>Location & Time:</strong> We'll coordinate via text!</p>";
+    } else {
+      pickupHTML =
+        "<p><strong>Location:</strong> <a href='" + locationLink + "' style='color: #786043;'>" + locationName + "</a></p>" +
+        "<p><strong>Time:</strong> " + timeWindow + "</p>";
+      if (!isFlexible) {
+        pickupHTML +=
+          "<div style='margin: 24px 0; text-align: center; background: #faf8f5; border-radius: 10px; padding: 20px;'>" +
+          "<p style='font-size: 14px; color: #786043; margin: 0 0 12px; font-weight: 500;'>When you arrive, tap the button below to let me know:</p>" +
+          "<a href='" + arrivedLink + "' style='display: inline-block; padding: 16px 32px; background-color: #E8740C; color: white; text-decoration: none; border-radius: 8px; font-size: 17px; font-weight: 600; letter-spacing: 0.02em;'>I&rsquo;m here for pickup!</a>" +
+          "</div>";
+      }
+    }
+
+    var htmlBody =
+      "<div style='font-family: sans-serif; max-width: 500px; margin: 0 auto; padding: 20px;'>" +
+      "<h2 style='color: #786043; margin: 0 0 16px;'>Your toffee is ready!</h2>" +
+      "<p style='color: #555; font-size: 16px;'>Hi " + order.name + ", just a friendly reminder that your Sunday Toffee order is ready for pickup today.</p>" +
+
+      "<div style='background: #faf8f5; border-radius: 8px; padding: 16px; margin: 20px 0;'>" +
+      "<h3 style='color: #786043; margin: 0 0 8px; font-size: 14px;'>YOUR ORDER</h3>" +
+      "<p style='color: #555; font-size: 14px; margin: 4px 0;'>" + itemsStr + "</p>" +
+      "<p style='color: #555; font-size: 14px; margin: 4px 0;'>Total: <strong>" + order.total + "</strong></p>" +
+      "</div>" +
+
+      "<div style='margin: 20px 0;'>" +
+      "<h3 style='color: #786043; margin: 0 0 8px; font-size: 14px;'>PICKUP DETAILS</h3>" +
+      pickupHTML +
+      "</div>" +
+
+      (order.payment === 'Venmo' ?
+        "<div style='background: #f5f0eb; border-radius: 8px; padding: 12px 16px; margin: 16px 0;'>" +
+        "<p style='color: #786043; font-size: 13px; margin: 0;'>Payment reminder: Venmo @oats123 (last 4: 7476) or Zelle avenajiajia@gmail.com</p>" +
+        "</div>" : "") +
+
+      "<p style='color: #555; font-size: 14px;'>Questions? <a href='sms:5106217820' style='color: #786043;'>Text me at 510-621-7820</a></p>" +
+      "<p style='color: #555;'>See you soon!<br>Avena</p>" +
+      "</div>";
+
+    var emailOptions = {
+      name: "Sunday Toffee",
+      htmlBody: htmlBody
+    };
+    if (fromAlias) emailOptions.from = fromAlias;
+
+    var sendTo = testMode ? 'avenajiajia@gmail.com' : order.email;
+    GmailApp.sendEmail(sendTo, subject, plainText, emailOptions);
+    Logger.log((testMode ? '[TEST] ' : '') + 'Sent reminder to ' + order.name + ' (' + sendTo + ')');
+  }
+
+  Logger.log('Finished sending ' + orders.length + ' reminders for ' + sundayStr);
+}
+
+
+// ============================================================
+// FEATURE 2: Saturday Morning Flavor Summary Email
+// Set up a time-driven trigger to run this every Saturday at 8 AM PT
+// ============================================================
+function sendFlavorSummary() {
+  // Find the upcoming Sunday (works correctly regardless of what day you run it)
+  var sundayStr = getUpcomingSundayString();
+
+  var orders = getOrdersForDay(sundayStr);
+
+  // Tally up flavors
+  var totals = {
+    eightMilk: 0, eightSemi: 0, eightDark: 0,
+    fourMilk: 0, fourSemi: 0, fourDark: 0
+  };
+  var totalBoxes = 0;
+  var totalRevenue = 0;
+  var unpaidCount = 0;
+
+  for (var i = 0; i < orders.length; i++) {
+    var o = orders[i];
+    totals.eightMilk += Number(o.eightMilk) || 0;
+    totals.eightSemi += Number(o.eightSemi) || 0;
+    totals.eightDark += Number(o.eightDark) || 0;
+    totals.fourMilk += Number(o.fourMilk) || 0;
+    totals.fourSemi += Number(o.fourSemi) || 0;
+    totals.fourDark += Number(o.fourDark) || 0;
+
+    // Parse total (stored as "$30" etc.)
+    var rev = String(o.total).replace('$', '');
+    totalRevenue += Number(rev) || 0;
+
+    if (!o.paid) unpaidCount++;
+  }
+
+  totalBoxes = totals.eightMilk + totals.eightSemi + totals.eightDark +
+               totals.fourMilk + totals.fourSemi + totals.fourDark;
+
+  var subject = "Sunday Toffee Prep: " + totalBoxes + " boxes for " + sundayStr;
+
+  var plainText = "SUNDAY TOFFEE - PRODUCTION SUMMARY\n" +
+    "For: " + sundayStr + "\n" +
+    "Orders: " + orders.length + " | Boxes: " + totalBoxes + " | Revenue: $" + totalRevenue + "\n\n" +
+    "BOXES TO MAKE:\n" +
+    "  Milk chocolate (8 oz): " + totals.eightMilk + "\n" +
+    "  Semi-sweet (8 oz):     " + totals.eightSemi + "\n" +
+    "  Dark chocolate (8 oz): " + totals.eightDark + "\n";
+
+  if (totals.fourMilk + totals.fourSemi + totals.fourDark > 0) {
+    plainText += "\n  Milk chocolate (4 oz): " + totals.fourMilk + "\n" +
+      "  Semi-sweet (4 oz):     " + totals.fourSemi + "\n" +
+      "  Dark chocolate (4 oz): " + totals.fourDark + "\n";
+  }
+
+  plainText += "\nORDER-BY-ORDER:\n";
+  for (var i = 0; i < orders.length; i++) {
+    var o = orders[i];
+    var items = [];
+    if (o.eightMilk) items.push(o.eightMilk + 'x milk');
+    if (o.eightSemi) items.push(o.eightSemi + 'x semi');
+    if (o.eightDark) items.push(o.eightDark + 'x dark');
+    plainText += "  " + o.name + ": " + items.join(', ') + " (" + o.total + ", " + o.payment + (o.paid ? ", PAID" : "") + ")\n";
+  }
+
+  // Build HTML version
+  var htmlBody =
+    "<div style='font-family: sans-serif; max-width: 550px; margin: 0 auto; padding: 20px;'>" +
+    "<h2 style='color: #786043; margin: 0 0 4px;'>Sunday Toffee Prep</h2>" +
+    "<p style='color: #999; font-size: 14px; margin: 0 0 20px;'>" + sundayStr + "</p>" +
+
+    // Summary cards
+    "<div style='display: flex; gap: 10px; margin-bottom: 20px;'>" +
+    "<div style='flex: 1; background: #faf8f5; border-radius: 8px; padding: 16px; text-align: center;'>" +
+    "<div style='font-size: 28px; font-weight: bold; color: #786043;'>" + orders.length + "</div>" +
+    "<div style='font-size: 12px; color: #999;'>orders</div></div>" +
+    "<div style='flex: 1; background: #faf8f5; border-radius: 8px; padding: 16px; text-align: center;'>" +
+    "<div style='font-size: 28px; font-weight: bold; color: #786043;'>" + totalBoxes + "</div>" +
+    "<div style='font-size: 12px; color: #999;'>boxes</div></div>" +
+    "<div style='flex: 1; background: #faf8f5; border-radius: 8px; padding: 16px; text-align: center;'>" +
+    "<div style='font-size: 28px; font-weight: bold; color: #786043;'>$" + totalRevenue + "</div>" +
+    "<div style='font-size: 12px; color: #999;'>revenue</div></div>" +
+    "</div>" +
+
+    // Flavor breakdown
+    "<div style='background: white; border: 1px solid #e8d5d2; border-radius: 8px; padding: 16px; margin-bottom: 20px;'>" +
+    "<h3 style='color: #786043; margin: 0 0 12px; font-size: 14px;'>BOXES TO MAKE</h3>" +
+    "<table style='width: 100%; font-size: 14px; color: #555;'>" +
+    "<tr><td style='padding: 6px 0;'><span style='display:inline-block; width:10px; height:10px; border-radius:50%; background:#9B6E4C; margin-right:8px;'></span>Milk chocolate (8 oz)</td><td style='text-align:right; font-weight:bold; font-size:18px; color:#786043;'>" + totals.eightMilk + "</td></tr>" +
+    "<tr><td style='padding: 6px 0;'><span style='display:inline-block; width:10px; height:10px; border-radius:50%; background:#5C3A1E; margin-right:8px;'></span>Semi-sweet (8 oz)</td><td style='text-align:right; font-weight:bold; font-size:18px; color:#786043;'>" + totals.eightSemi + "</td></tr>" +
+    "<tr><td style='padding: 6px 0;'><span style='display:inline-block; width:10px; height:10px; border-radius:50%; background:#2E1A0E; margin-right:8px;'></span>Dark chocolate (8 oz)</td><td style='text-align:right; font-weight:bold; font-size:18px; color:#786043;'>" + totals.eightDark + "</td></tr>" +
+    "</table>" +
+    "</div>" +
+
+    // Order-by-order breakdown
+    "<div style='margin-bottom: 20px;'>" +
+    "<h3 style='color: #786043; margin: 0 0 12px; font-size: 14px;'>ORDER-BY-ORDER</h3>";
+
+  for (var i = 0; i < orders.length; i++) {
+    var o = orders[i];
+    var items = [];
+    if (o.eightMilk) items.push(o.eightMilk + 'x milk');
+    if (o.eightSemi) items.push(o.eightSemi + 'x semi');
+    if (o.eightDark) items.push(o.eightDark + 'x dark');
+    var paidBadge = o.paid ?
+      "<span style='background:#e8f5e9; color:#2e7d32; font-size:11px; padding:2px 6px; border-radius:3px;'>PAID</span>" :
+      "<span style='background:#fff3e0; color:#e65100; font-size:11px; padding:2px 6px; border-radius:3px;'>" + o.payment + "</span>";
+    htmlBody +=
+      "<div style='background: #faf8f5; border-radius: 6px; padding: 10px 14px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;'>" +
+      "<div><strong style='color: #393939;'>" + o.name + "</strong><br><span style='font-size: 13px; color: #999;'>" + items.join(', ') + "</span></div>" +
+      "<div style='text-align: right;'><strong style='color: #786043;'>" + o.total + "</strong><br>" + paidBadge + "</div>" +
+      "</div>";
+  }
+
+  htmlBody += "</div>" +
+    "<p style='text-align: center;'><a href='https://docs.google.com/spreadsheets/d/1aMYtfGj0XfVVPL3K4x8bwcwLXIduO9J9GlLmNSF7dRY/edit?gid=1316233894#gid=1316233894' style='color: #786043;'>Open full sheet</a></p>" +
+    "</div>";
+
+  GmailApp.sendEmail("avenajiajia@gmail.com", subject, plainText, { htmlBody: htmlBody });
+  Logger.log('Sent flavor summary for ' + sundayStr);
+}
+
+
+// ============================================================
+// FEATURE 3: Live Dashboard (doGet)
+// Visit your web app URL in a browser to see the dashboard
+// ============================================================
+function doGet(e) {
+  var sundayStr = getUpcomingSundayString();
+  var orders = getOrdersForDay(sundayStr);
+
+  // Tally up flavors
+  var totals = {
+    eightMilk: 0, eightSemi: 0, eightDark: 0,
+    fourMilk: 0, fourSemi: 0, fourDark: 0
+  };
+  var totalRevenue = 0;
+
+  for (var i = 0; i < orders.length; i++) {
+    var o = orders[i];
+    totals.eightMilk += Number(o.eightMilk) || 0;
+    totals.eightSemi += Number(o.eightSemi) || 0;
+    totals.eightDark += Number(o.eightDark) || 0;
+    totals.fourMilk += Number(o.fourMilk) || 0;
+    totals.fourSemi += Number(o.fourSemi) || 0;
+    totals.fourDark += Number(o.fourDark) || 0;
+    var rev = String(o.total).replace('$', '');
+    totalRevenue += Number(rev) || 0;
+  }
+
+  var totalBoxes = totals.eightMilk + totals.eightSemi + totals.eightDark +
+                   totals.fourMilk + totals.fourSemi + totals.fourDark;
+
+  // Build order rows for the table
+  var orderRowsHTML = '';
+  for (var i = 0; i < orders.length; i++) {
+    var o = orders[i];
+    var items = [];
+    if (o.eightMilk) items.push(o.eightMilk + 'x milk');
+    if (o.eightSemi) items.push(o.eightSemi + 'x semi');
+    if (o.eightDark) items.push(o.eightDark + 'x dark');
+    var paidLabel = o.paid ? '<span style="color:#2e7d32;">Paid</span>' : '<span style="color:#e65100;">' + o.payment + '</span>';
+    var pickedUpLabel = o.pickedUp ? 'Yes' : '—';
+    orderRowsHTML +=
+      '<tr>' +
+      '<td style="padding:10px 12px; border-bottom: 1px solid #f0e8e0;">' + o.name + '</td>' +
+      '<td style="padding:10px 12px; border-bottom: 1px solid #f0e8e0;">' + items.join(', ') + '</td>' +
+      '<td style="padding:10px 12px; border-bottom: 1px solid #f0e8e0;">' + (o.pickupTime || 'N/A') + '</td>' +
+      '<td style="padding:10px 12px; border-bottom: 1px solid #f0e8e0;">' + o.total + '</td>' +
+      '<td style="padding:10px 12px; border-bottom: 1px solid #f0e8e0;">' + paidLabel + '</td>' +
+      '<td style="padding:10px 12px; border-bottom: 1px solid #f0e8e0;">' + pickedUpLabel + '</td>' +
+      '</tr>';
+  }
+
+  if (orders.length === 0) {
+    orderRowsHTML = '<tr><td colspan="6" style="padding: 30px; text-align: center; color: #999;">No orders yet for this Sunday</td></tr>';
+  }
+
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+    '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+    '<title>Sunday Toffee Dashboard</title>' +
+    '<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">' +
+    '<style>' +
+    '* { margin: 0; padding: 0; box-sizing: border-box; }' +
+    'body { font-family: "Inter", sans-serif; background: #F9F5EF; color: #393939; padding: 24px; }' +
+    '.container { max-width: 700px; margin: 0 auto; }' +
+    'h1 { font-family: "Libre Baskerville", serif; color: #786043; font-weight: 400; font-size: 1.8rem; margin-bottom: 4px; }' +
+    '.subtitle { color: #999; font-size: 0.9rem; margin-bottom: 24px; }' +
+    '.cards { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }' +
+    '.card { flex: 1; min-width: 100px; background: white; border-radius: 10px; padding: 20px; text-align: center; border: 1px solid #e8d5d2; }' +
+    '.card-num { font-size: 2rem; font-weight: 600; color: #786043; }' +
+    '.card-label { font-size: 0.75rem; color: #999; margin-top: 2px; }' +
+    '.flavor-section { background: white; border-radius: 10px; padding: 20px; border: 1px solid #e8d5d2; margin-bottom: 24px; }' +
+    '.flavor-section h2 { font-family: "Libre Baskerville", serif; color: #786043; font-size: 1.1rem; font-weight: 400; margin-bottom: 16px; }' +
+    '.flavor-row { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f5ede5; }' +
+    '.flavor-row:last-child { border-bottom: none; }' +
+    '.flavor-swatch { width: 14px; height: 14px; border-radius: 50%; margin-right: 12px; flex-shrink: 0; }' +
+    '.flavor-name { flex: 1; font-size: 0.95rem; }' +
+    '.flavor-count { font-size: 1.5rem; font-weight: 600; color: #786043; min-width: 40px; text-align: right; }' +
+    '.orders-section { background: white; border-radius: 10px; border: 1px solid #e8d5d2; overflow: hidden; }' +
+    '.orders-section h2 { font-family: "Libre Baskerville", serif; color: #786043; font-size: 1.1rem; font-weight: 400; padding: 20px 20px 12px; }' +
+    'table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }' +
+    'th { text-align: left; padding: 8px 12px; color: #999; font-weight: 500; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #e8d5d2; }' +
+    '.refresh { text-align: center; margin-top: 16px; }' +
+    '.refresh a { color: #786043; font-size: 0.85rem; text-decoration: none; }' +
+    '.refresh a:hover { text-decoration: underline; }' +
+    '@media (max-width: 500px) { .cards { flex-direction: column; } table { font-size: 0.8rem; } }' +
+    '</style></head><body>' +
+    '<div class="container">' +
+    '<h1>sunday toffee</h1>' +
+    '<p class="subtitle">' + sundayStr + ' &mdash; refreshed at ' + new Date().toLocaleString('en-US', {timeZone: 'America/Los_Angeles', hour: 'numeric', minute: '2-digit', hour12: true}) + '</p>' +
+
+    '<div class="cards">' +
+    '<div class="card"><div class="card-num">' + orders.length + '</div><div class="card-label">orders</div></div>' +
+    '<div class="card"><div class="card-num">' + totalBoxes + '</div><div class="card-label">boxes</div></div>' +
+    '<div class="card"><div class="card-num">$' + totalRevenue + '</div><div class="card-label">revenue</div></div>' +
+    '</div>' +
+
+    '<div class="flavor-section">' +
+    '<h2>boxes to make</h2>' +
+    '<div class="flavor-row"><div class="flavor-swatch" style="background:#9B6E4C;"></div><div class="flavor-name">Milk chocolate (8 oz)</div><div class="flavor-count">' + totals.eightMilk + '</div></div>' +
+    '<div class="flavor-row"><div class="flavor-swatch" style="background:#5C3A1E;"></div><div class="flavor-name">Semi-sweet (8 oz)</div><div class="flavor-count">' + totals.eightSemi + '</div></div>' +
+    '<div class="flavor-row"><div class="flavor-swatch" style="background:#2E1A0E;"></div><div class="flavor-name">Dark chocolate (8 oz)</div><div class="flavor-count">' + totals.eightDark + '</div></div>' +
+    '</div>' +
+
+    '<div class="orders-section">' +
+    '<h2>all orders</h2>' +
+    '<table><thead><tr><th>Name</th><th>Items</th><th>Window</th><th>Total</th><th>Payment</th><th>Picked up</th></tr></thead>' +
+    '<tbody>' + orderRowsHTML + '</tbody></table>' +
+    '</div>' +
+
+    '<div class="refresh"><a href="">Refresh</a></div>' +
+    '</div></body></html>';
+
+  return HtmlService.createHtmlOutput(html)
+    .setTitle('Sunday Toffee Dashboard')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
+
+// ============================================================
+// TEST: Sends all reminder emails to YOU instead of customers
+// Safe to run anytime — no customers will be emailed
+// ============================================================
+function testPickupReminders() {
+  sendPickupReminders(true);
+}
+
+
+// ============================================================
+// SETUP: Run this once to create the time-driven triggers
+// ============================================================
+function setupTriggers() {
+  // Remove any existing triggers for these functions to avoid duplicates
+  var triggers = ScriptApp.getProjectTriggers();
+  for (var i = 0; i < triggers.length; i++) {
+    var funcName = triggers[i].getHandlerFunction();
+    if (funcName === 'sendPickupReminders' || funcName === 'sendFlavorSummary') {
+      ScriptApp.deleteTrigger(triggers[i]);
+    }
+  }
+
+  // Sunday 8 AM PT - send pickup reminders to customers
+  ScriptApp.newTrigger('sendPickupReminders')
+    .timeBased()
+    .onWeekDay(ScriptApp.WeekDay.SUNDAY)
+    .atHour(8)
+    .nearMinute(0)
+    .everyWeeks(1)
+    .inTimezone('America/Los_Angeles')
+    .create();
+
+  // Saturday 8 AM PT - send flavor summary to you
+  ScriptApp.newTrigger('sendFlavorSummary')
+    .timeBased()
+    .onWeekDay(ScriptApp.WeekDay.SATURDAY)
+    .atHour(8)
+    .nearMinute(0)
+    .everyWeeks(1)
+    .inTimezone('America/Los_Angeles')
+    .create();
+
+  Logger.log('Triggers created successfully!');
 }
