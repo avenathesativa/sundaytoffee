@@ -1,25 +1,7 @@
 function doPost(e) {
   try {
-    var data = JSON.parse(e.postData.contents);
-
-    // Handle "I'm here" arrival notifications
-    if (data.action === 'arrived') {
-      GmailApp.sendEmail(
-        "avenajiajia@gmail.com",
-        "🟢 " + data.name + " is here for pickup!",
-        data.name + " just tapped 'I'm here' and is waiting for their toffee!\n\nTime: " + new Date().toLocaleString('en-US', {timeZone: 'America/Los_Angeles'}),
-        {
-          htmlBody: "<div style='font-family: sans-serif; padding: 20px;'>" +
-            "<h2 style='color: #786043; margin: 0 0 10px;'>🟢 " + data.name + " is here!</h2>" +
-            "<p style='color: #555; font-size: 16px;'>They just tapped <strong>I'm here</strong> and are waiting for their toffee.</p>" +
-            "<p style='color: #999; font-size: 14px;'>" + new Date().toLocaleString('en-US', {timeZone: 'America/Los_Angeles'}) + "</p>" +
-            "</div>"
-        }
-      );
-      return ContentService.createTextOutput(JSON.stringify({status: 'success'})).setMimeType(ContentService.MimeType.JSON);
-    }
-
     var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var data = JSON.parse(e.postData.contents);
     var sheet = ss.getSheetByName('Toffee Orders');
 
     // Handle pickup day/time for BOTH forms
@@ -128,40 +110,15 @@ function doPost(e) {
       }
     }
 
-    // Determine which pickup location was selected
-    var isPageSt = pickupTime && pickupTime.indexOf('55 Page St') > -1;
-    var isMarketSt = pickupTime && pickupTime.indexOf('3639 Market St') > -1;
-
-    // "I'm here" link
-    var arrivedLink = "https://sundaytoffee.com/arrived.html?name=" + encodeURIComponent(data.name);
-
     // Plain text version
-    var fulfillmentPlainText;
-    if (data.method === "Delivery") {
-      fulfillmentPlainText = "Fulfillment: Delivery to " + data.address;
-    } else if (pickupTime === "Flexible") {
-      fulfillmentPlainText = "Fulfillment: TBD — I'll text you to arrange a time!";
-    } else if (isPageSt) {
-      fulfillmentPlainText = "Fulfillment: Pickup at 55 Page Street, San Francisco (https://maps.app.goo.gl/DCa1x8vuQUtsp3mP8)\n\nDay & Time: " + pickupDay + " during 1PM – 2PM\n\nWhen you arrive, tap this link to let me know you're here: " + arrivedLink;
-    } else {
-      fulfillmentPlainText = "Fulfillment: Pickup at 3639 Market Street, San Francisco (https://maps.app.goo.gl/P2sAxcqiENHMZJe37) - ring the first doorbell when you get here! If you are driving, feel free to temporarily park in front of the driveway for quick pick up.\n\nDay & Time: " + pickupDay + " during 2:30PM – 4PM";
-    }
+    var fulfillmentPlainText = (data.method === "Delivery")
+      ? "Fulfillment: Delivery to " + data.address
+      : "Fulfillment: Pickup is at 3639 Market Street (https://maps.app.goo.gl/P2sAxcqiENHMZJe37) - ring the first doorbell when you get here! If you are driving, feel free to temporarily park in front of the driveway for quick pick up.\n\nDay & Time: " + (pickupTime === "Flexible" ? "TBD — I'll text you to arrange a time!" : pickupDay + " during " + pickupTime);
 
     // HTML version
-    var fulfillmentHTML;
-    if (data.method === "Delivery") {
-      fulfillmentHTML = "<p><strong>Fulfillment:</strong> Delivery to " + data.address + "</p>";
-    } else if (pickupTime === "Flexible") {
-      fulfillmentHTML = "<p><strong>Day & Time:</strong> TBD &mdash; I'll text you to arrange a time!</p>";
-    } else if (isPageSt) {
-      fulfillmentHTML = "<p><strong>Fulfillment:</strong> Pickup at <a href='https://maps.app.goo.gl/DCa1x8vuQUtsp3mP8'>55 Page Street, San Francisco</a></p>" +
-        "<p><strong>Day & Time:</strong> " + pickupDay + " during 1PM &ndash; 2PM</p>" +
-        "<div style='margin: 16px 0; text-align: center;'><a href='" + arrivedLink + "' style='display: inline-block; padding: 14px 28px; background-color: #786043; color: white; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: 500;'>I&rsquo;m here for pickup!</a></div>" +
-        "<p style='font-size: 13px; color: #999; text-align: center;'>Tap the button when you arrive and I'll be right out with your toffee.</p>";
-    } else {
-      fulfillmentHTML = "<p><strong>Fulfillment:</strong> Pickup at <a href='https://maps.app.goo.gl/EZmuY7BPceEqVesBA'>3639 Market Street, San Francisco</a> &mdash; ring the first doorbell when you get here! If you are driving, feel free to temporarily park in front of the driveway for quick pick up.</p>" +
-        "<p><strong>Day & Time:</strong> " + pickupDay + " during 2:30PM &ndash; 4PM</p>";
-    }
+    var fulfillmentHTML = (data.method === "Delivery")
+      ? "<p><strong>Fulfillment:</strong> Delivery to " + data.address + "</p>"
+      : "<p><strong>Fulfillment:</strong> Pickup is at <a href='https://maps.app.goo.gl/P2sAxcqiENHMZJe37'>3639 Market Street</a> &mdash; ring the first doorbell when you get here! If you are driving, feel free to temporarily park in front of the driveway for quick pick up.</p>" + (pickupTime === "Flexible" ? "<p><strong>Day & Time:</strong> TBD &mdash; I'll text you to arrange a time!</p>" : "<p><strong>Day & Time:</strong> " + pickupDay + " during " + pickupTime + "</p>");
 
     var messagePlainText = "Hi " + data.name + ",\n\n" +
       "Thank you for your Sunday Toffee order! See you soon!\n\n" +

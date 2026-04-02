@@ -107,22 +107,6 @@
         try {
             const orderData = JSON.parse(sessionStorage.getItem('sundayToffeeOrder'));
             if (orderData) {
-                // --- GA4 Purchase Event ---
-                const ga4Items = (orderData.itemsDetailed || []).map((item, i) => ({
-                    item_id: 'toffee_8oz',
-                    item_name: item.label,
-                    price: item.subtotal / (parseInt(item.label) || 1),
-                    quantity: parseInt(item.label) || 1,
-                    item_category: 'Toffee',
-                    index: i
-                }));
-                gtag('event', 'purchase', {
-                    transaction_id: 'ST_' + Date.now(),
-                    value: orderData.total,
-                    currency: 'USD',
-                    items: ga4Items
-                });
-                // --- End GA4 Purchase Event ---
                 const summary = document.getElementById('summaryContent');
                 let itemsHTML = '';
                 if (orderData.itemsDetailed) {

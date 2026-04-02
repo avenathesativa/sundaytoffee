@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I'm Here! | Sunday Toffee</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary-brown: #786043;
+            --primary-brown-dark: #5D4A33;
+            --bg-cream: #F9F5EF;
+            --dark-text: #393939;
+            --light-text: #676767;
+            --accent-tan: #F2E0C9;
+            --border-tan: #E8D5D2;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--dark-text);
+            background-color: var(--bg-cream);
+            line-height: 1.6;
+            font-weight: 300;
+        }
+        nav { padding: 2rem 8%; display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto; }
+        .logo { font-family: 'Libre Baskerville', serif; font-size: 1.3rem; color: var(--primary-brown); text-decoration: none; }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a { text-decoration: none; color: var(--light-text); font-size: 0.9rem; }
+        .arrived-page { max-width: 450px; margin: 0 auto; padding: 3rem 1.5rem 5rem; text-align: center; }
+        .page-title { font-family: 'Libre Baskerville', serif; font-size: 2rem; font-weight: 400; color: var(--primary-brown); margin-bottom: 0.75rem; }
+        .subtitle { color: var(--light-text); font-size: 0.95rem; margin-bottom: 2.5rem; }
+        .name-display { font-family: 'Libre Baskerville', serif; font-size: 1.3rem; color: var(--primary-brown); margin-bottom: 2rem; }
+        .btn-arrived { width: 100%; padding: 1.2rem; background: var(--primary-brown); color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 500; cursor: pointer; transition: background 0.2s, transform 0.1s; font-family: 'Inter', sans-serif; }
+        .btn-arrived:hover { background: var(--primary-brown-dark); }
+        .btn-arrived:active { transform: scale(0.98); }
+        .btn-arrived:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .success-msg { display: none; margin-top: 2rem; }
+        .success-msg .checkmark { font-size: 3rem; margin-bottom: 1rem; }
+        .success-msg p { color: var(--light-text); font-size: 0.95rem; }
+        .name-input { width: 100%; padding: 0.9rem 1rem; border: 1px solid var(--border-tan); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 1rem; background: white; text-align: center; margin-bottom: 1.5rem; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html" class="logo">sunday toffee</a>
+        <ul class="nav-links">
+            <li><a href="index.html#products">what i make</a></li>
+            <li><a href="index.html#about">about</a></li>
+            <li><a href="order.html">order</a></li>
+        </ul>
+    </nav>
+
+    <div class="arrived-page">
+        <div id="arrivalForm">
+            <h1 class="page-title">picking up your toffee?</h1>
+            <p class="subtitle">Tap the button below to let me know you're here and I'll be right out!</p>
+
+            <div id="nameFromUrl" class="name-display" style="display: none;"></div>
+            <input type="text" id="nameInput" class="name-input" placeholder="Your name" style="display: none;">
+
+            <button class="btn-arrived" id="arrivedBtn" onclick="notifyArrival()">I'm here!</button>
+        </div>
+
+        <div id="successMsg" class="success-msg">
+            <div class="checkmark">&#10003;</div>
+            <h1 class="page-title">got it!</h1>
+            <p>I know you're here — be right out with your toffee!</p>
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwT-mQefx2FonndoDe81zB0WGZJAh3A-s0Cc3nX5e6hmg0BN9KnEIrc4nqjpoWLqkZBSg/exec';
+
+        // Check for name in URL params
+        const params = new URLSearchParams(window.location.search);
+        const urlName = params.get('name');
+
+        if (urlName) {
+            document.getElementById('nameFromUrl').textContent = 'Hi, ' + decodeURIComponent(urlName) + '!';
+            document.getElementById('nameFromUrl').style.display = 'block';
+        } else {
+            document.getElementById('nameInput').style.display = 'block';
+        }
+
+        async function notifyArrival() {
+            const name = urlName || document.getElementById('nameInput').value.trim();
+            if (!name) {
+                document.getElementById('nameInput').style.border = '1.5px solid #c4847a';
+                document.getElementById('nameInput').placeholder = 'Please enter your name';
+                return;
+            }
+
+            const btn = document.getElementById('arrivedBtn');
+            btn.disabled = true;
+            btn.textContent = 'letting Avena know...';
+
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({
+                        action: 'arrived',
+                        name: name,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+            } catch (err) {
+                // no-cors won't give us a response, but the request still goes through
+            }
+
+            document.getElementById('arrivalForm').style.display = 'none';
+            document.getElementById('successMsg').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
