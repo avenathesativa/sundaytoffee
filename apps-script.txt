@@ -187,8 +187,12 @@ function doPost(e) {
 
     // Extract the time window from the pickup value (e.g. "2PM - 3PM @ 3639 Market St" → "2PM – 3PM")
     var timeWindowText = '';
-    if (pickupTime && pickupTime.indexOf(' @ ') > -1) {
+    if (pickupTime === "Flexible") {
+      timeWindowText = 'Flexible';
+    } else if (pickupTime && pickupTime.indexOf(' @ ') > -1) {
       timeWindowText = pickupTime.split(' @ ')[0].replace(' - ', ' – ');
+    } else if (pickupTime) {
+      timeWindowText = pickupTime.replace(' - ', ' – ');
     }
 
     // Plain text version
@@ -242,7 +246,7 @@ function doPost(e) {
       "<p>• Venmo: @oats123 (last 4 digits: 7476)<br>" +
       "• Zelle: avenajiajia@gmail.com<br>" +
       "• Cash: pinky promise to pay at pick up or i will be sad</p>" +
-      "<p>If you have any questions or need to make changes to your order, you can respond to this email or <a href='tel:5106217820' style='color: #1155cc; text-decoration: underline;'>text me at 510-621-7820</a>.</p>" +
+      "<p>If you have any questions or need to make changes to your order, you can respond to this email or <a href='sms:5106217820' style='color: #786043; text-decoration: underline;'>text me at 510-621-7820</a>.</p>" +
       "<p>Warmly,<br>Avena</p>";
 
     // Send to customer
@@ -406,8 +410,13 @@ function sendPickupReminders(testMode) {
 
     // Extract time window from the pickup value (e.g. "2PM - 3PM @ 3639 Market St" → "2PM – 3PM")
     var timeWindow = '';
-    if (pickupTime && pickupTime.indexOf(' @ ') > -1) {
+    if (isFlexible) {
+      timeWindow = 'Flexible';
+    } else if (pickupTime && pickupTime.indexOf(' @ ') > -1) {
       timeWindow = pickupTime.split(' @ ')[0].replace(' - ', ' – ');
+    } else if (pickupTime) {
+      // Fallback: use the full value if no " @ " separator (older orders)
+      timeWindow = pickupTime.replace(' - ', ' – ');
     }
 
     var locationName, locationLink;
@@ -417,7 +426,6 @@ function sendPickupReminders(testMode) {
     } else if (isFlexible) {
       locationName = 'TBD';
       locationLink = '';
-      timeWindow = "We'll coordinate via text!";
     } else {
       locationName = '3639 Market Street, San Francisco (Eureka Valley)';
       locationLink = 'https://maps.app.goo.gl/EZmuY7BPceEqVesBA';
@@ -429,20 +437,26 @@ function sendPickupReminders(testMode) {
     // Build the reminder email
     var subject = "Reminder: Your toffee is ready for pickup today!";
 
+    // Build bullet list for plain text
+    var itemsBullets = items.map(function(item) { return '  • ' + item; }).join('\n');
+    // Ensure total has $ sign
+    var totalDisplay = String(order.total).indexOf('$') === 0 ? order.total : '$' + order.total;
+
     var plainText = "Hi " + order.name + ",\n\n" +
       "Just a friendly reminder — your Sunday Toffee order is ready for pickup today!\n\n" +
-      "YOUR ORDER:\n" + itemsStr + "\n" +
-      "Total: " + order.total + "\n\n" +
+      "YOUR ORDER:\n" + itemsBullets + "\n" +
+      "Total: " + totalDisplay + "\n\n" +
       "PICKUP DETAILS:\n" +
       "Location: " + locationName + "\n" +
       "Time: " + timeWindow + "\n\n" +
       (order.payment === 'Venmo' ? "PAYMENT REMINDER:\nVenmo: @oats123 (last 4 digits: 7476)\nZelle: avenajiajia@gmail.com\n\n" : "") +
+      "Questions? Text me at 510-621-7820\n\n" +
       "See you soon!\nAvena";
 
     // Pickup-specific HTML
     var pickupHTML;
     if (isFlexible) {
-      pickupHTML = "<p><strong>Location & Time:</strong> We'll coordinate via text!</p>";
+      pickupHTML = "<p><strong>Location & Time:</strong> Flexible &mdash; I'll <a href='sms:5106217820' style='color: #786043;'>text you</a> to coordinate!</p>";
     } else {
       pickupHTML =
         "<p><strong>Location:</strong> <a href='" + locationLink + "' style='color: #786043;'>" + locationName + "</a></p>" +
@@ -463,8 +477,10 @@ function sendPickupReminders(testMode) {
 
       "<div style='background: #faf8f5; border-radius: 8px; padding: 16px; margin: 20px 0;'>" +
       "<h3 style='color: #786043; margin: 0 0 8px; font-size: 14px;'>YOUR ORDER</h3>" +
-      "<p style='color: #555; font-size: 14px; margin: 4px 0;'>" + itemsStr + "</p>" +
-      "<p style='color: #555; font-size: 14px; margin: 4px 0;'>Total: <strong>" + order.total + "</strong></p>" +
+      "<ul style='color: #555; font-size: 14px; margin: 4px 0 8px 16px; padding: 0;'>" +
+      items.map(function(item) { return "<li style='margin: 4px 0;'>" + item + "</li>"; }).join('') +
+      "</ul>" +
+      "<p style='color: #555; font-size: 14px; margin: 4px 0;'>Total: <strong>" + totalDisplay + "</strong></p>" +
       "</div>" +
 
       "<div style='margin: 20px 0;'>" +
@@ -477,7 +493,7 @@ function sendPickupReminders(testMode) {
         "<p style='color: #786043; font-size: 13px; margin: 0;'>Payment reminder: Venmo @oats123 (last 4: 7476) or Zelle avenajiajia@gmail.com</p>" +
         "</div>" : "") +
 
-      "<p style='color: #555; font-size: 14px;'>Questions? <a href='sms:5106217820' style='color: #786043;'>Text me at 510-621-7820</a></p>" +
+      "<p style='color: #555; font-size: 14px;'>Questions? <a href='sms:5106217820' style='color: #786043; text-decoration: underline;'>Text me at 510-621-7820</a></p>" +
       "<p style='color: #555;'>See you soon!<br>Avena</p>" +
       "</div>";
 

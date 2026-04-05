@@ -166,7 +166,7 @@
 
         .product-photo img {
             max-width: 100%;
-            width: 600px;
+            width: 400px;
             border-radius: 8px;
             transition: transform 0.2s ease;
         }
@@ -229,6 +229,23 @@
             color: var(--light-text);
             font-size: 0.95rem;
             margin-bottom: 1rem;
+        }
+
+        .about-photo {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .ingredients-photo {
+            width: 100%;
+            max-width: 320px;
+            height: auto;
+            margin-top: 1.5rem;
+            display: block;
         }
 
         .about-details h3 {
@@ -368,11 +385,11 @@
     </section>
 
     <section id="products">
-        <h2 class="section-title fade-in">what i make</h2>
-        <p class="section-subtitle fade-in">Simple recipes, quality ingredients.</p>
+        <h2 class="section-title fade-in" style="text-align: center;">what i make</h2>
+        <p class="section-subtitle fade-in" style="text-align: center;">Simple recipes, quality ingredients.</p>
 
         <div class="product-photo fade-in">
-            <img src="images/brown-box.png" alt="Sunday Toffee - open box showing chocolate almond toffee pieces">
+            <img src="images/better%20toffee%20picture.png" alt="Sunday Toffee - open box showing chocolate almond toffee pieces">
         </div>
     </section>
 
@@ -381,8 +398,9 @@
         <h2 class="section-title fade-in">the story</h2>
         <div class="about-content fade-in">
             <div class="about-story">
-                <p>Sunday Toffee started the way most good things do — making treats for family and friends during the holidays. After years of people saying "you should sell this," I finally gave it a shot.</p>
-                <p>It's called Sunday Toffee because that's when you can get it. I make everything myself, one batch at a time, on weekends. It's a one-person operation, about as local as it gets.</p>
+                <img src="images/about-me.jpg" alt="Avena, the maker behind Sunday Toffee" class="about-photo">
+                <p>Sunday Toffee started the way most good things do — making treats for family and friends during the holidays. After years of people saying "you <em>have</em> to sell this," I figured it was time to share.</p>
+                <p>I call it Sunday Toffee because I only have time to make it on the weekends. Every batch is made by me, by hand, on the weekend. It's a one-person operation, about as local as it gets.</p>
             </div>
             <div class="about-details">
                 <h3>ingredients</h3>
@@ -392,6 +410,7 @@
                 <p>Milk, Soy, Tree Nuts (Almonds, Walnuts, Pecans)</p>
 
                 <p class="allergens" style="margin-top: 1rem;">May contain: Egg, Wheat, Coconut, Cashew, Hazelnut, Macadamia Nut, Pistachio</p>
+                <img src="images/ingredients.png" alt="Sunday Toffee ingredients" class="ingredients-photo">
             </div>
         </div>
     </section>
