@@ -228,7 +228,7 @@
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwT-mQefx2FonndoDe81zB0WGZJAh3A-s0Cc3nX5e6hmg0BN9KnEIrc4nqjpoWLqkZBSg/exec';
         let rowId = 0;
 
-        function addRow(choco = 'Milk chocolate', qty = 1) {
+        function addRow(choco = 'Milk Chocolate', qty = 1) {
             const id = rowId++;
             const container = document.getElementById('order-rows');
             const row = document.createElement('div');
@@ -252,8 +252,8 @@
                     </div>
                 </div>
                 <div class="choco-row">
-                    <button type="button" class="choco-chip${choco === 'Milk chocolate' ? ' selected' : ''}" onclick="setChoco(this, 'Milk chocolate')"><span class="choco-swatch swatch-milk"></span>milk</button>
-                    <button type="button" class="choco-chip${choco === 'Dark chocolate' ? ' selected' : ''}" onclick="setChoco(this, 'Dark chocolate')"><span class="choco-swatch swatch-dark"></span>dark</button>
+                    <button type="button" class="choco-chip${choco === 'Milk Chocolate' ? ' selected' : ''}" onclick="setChoco(this, 'Milk Chocolate')"><span class="choco-swatch swatch-milk"></span>milk</button>
+                    <button type="button" class="choco-chip${choco === 'Dark Chocolate' ? ' selected' : ''}" onclick="setChoco(this, 'Dark Chocolate')"><span class="choco-swatch swatch-dark"></span>dark</button>
                 </div>
             `;
             container.appendChild(row);
@@ -346,10 +346,10 @@
             const name = document.getElementById('name').value;
             const pickupWindow = document.querySelector('input[name="window"]:checked')?.value || 'N/A';
             const pay = document.querySelector('input[name="pay"]:checked').value;
-            const items = rows.map(r => `${r.qty}x ${r.size} ${r.choco}`).join(', ');
+            const items = rows.map(r => `${r.qty} × ${r.size} ${r.choco}`).join(', ');
 
             const itemsDetailed = rows.map(r => ({
-                label: `${r.qty}x ${r.size} ${r.choco}`,
+                label: `${r.qty} × ${r.size} ${r.choco}`,
                 subtotal: PRICES[r.size] * r.qty
             }));
             sessionStorage.setItem('sundayToffeeOrder', JSON.stringify({
