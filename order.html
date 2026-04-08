@@ -60,7 +60,6 @@
         .choco-row { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
         .choco-swatch { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
         .swatch-milk { background: #9B6E4C; }
-        .swatch-semi { background: #5C3A1E; }
         .swatch-dark { background: #2E1A0E; }
         .add-row-btn { width: 100%; padding: 0.85rem; border: 1.5px dashed var(--border-tan); border-radius: 8px; background: none; font-family: 'Inter', sans-serif; font-size: 0.85rem; color: var(--primary-brown); cursor: pointer; transition: 0.2s; margin-bottom: 0.75rem; }
         .add-row-btn:hover { background: white; border-color: var(--primary-brown); }
@@ -254,7 +253,6 @@
                 </div>
                 <div class="choco-row">
                     <button type="button" class="choco-chip${choco === 'Milk chocolate' ? ' selected' : ''}" onclick="setChoco(this, 'Milk chocolate')"><span class="choco-swatch swatch-milk"></span>milk</button>
-                    <button type="button" class="choco-chip${choco === 'Semi-sweet' ? ' selected' : ''}" onclick="setChoco(this, 'Semi-sweet')"><span class="choco-swatch swatch-semi"></span>semi-sweet</button>
                     <button type="button" class="choco-chip${choco === 'Dark chocolate' ? ' selected' : ''}" onclick="setChoco(this, 'Dark chocolate')"><span class="choco-swatch swatch-dark"></span>dark</button>
                 </div>
             `;
