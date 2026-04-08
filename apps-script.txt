@@ -27,9 +27,9 @@ function doPost(e) {
 
           // Build order items string
           var items = [];
-          if (eightMilk) items.push(eightMilk + 'x 8 oz Milk chocolate');
-          if (eightSemi) items.push(eightSemi + 'x 8 oz Semi-sweet');
-          if (eightDark) items.push(eightDark + 'x 8 oz Dark chocolate');
+          if (eightMilk) items.push(eightMilk + ' × 8 oz Milk Chocolate');
+          if (eightSemi) items.push(eightSemi + ' × 8 oz Semi-Sweet');
+          if (eightDark) items.push(eightDark + ' × 8 oz Dark Chocolate');
           var itemsStr = items.length > 0 ? items.join(', ') : 'See sheet';
 
           orderInfo = "\n\nORDER DETAILS:\n" +
@@ -395,12 +395,12 @@ function sendPickupReminders(testMode) {
 
     // Build order items string
     var items = [];
-    if (order.eightMilk) items.push(order.eightMilk + 'x 8 oz Milk chocolate');
-    if (order.eightSemi) items.push(order.eightSemi + 'x 8 oz Semi-sweet');
-    if (order.eightDark) items.push(order.eightDark + 'x 8 oz Dark chocolate');
-    if (order.fourMilk) items.push(order.fourMilk + 'x 4 oz Milk chocolate');
-    if (order.fourSemi) items.push(order.fourSemi + 'x 4 oz Semi-sweet');
-    if (order.fourDark) items.push(order.fourDark + 'x 4 oz Dark chocolate');
+    if (order.eightMilk) items.push(order.eightMilk + ' × 8 oz Milk Chocolate');
+    if (order.eightSemi) items.push(order.eightSemi + ' × 8 oz Semi-Sweet');
+    if (order.eightDark) items.push(order.eightDark + ' × 8 oz Dark Chocolate');
+    if (order.fourMilk) items.push(order.fourMilk + ' × 4 oz Milk Chocolate');
+    if (order.fourSemi) items.push(order.fourSemi + ' × 4 oz Semi-Sweet');
+    if (order.fourDark) items.push(order.fourDark + ' × 4 oz Dark Chocolate');
     var itemsStr = items.join(', ');
 
     // Determine pickup location details
