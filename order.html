@@ -73,7 +73,8 @@
         .location-address a { color: inherit; text-decoration: none; }
         .location-address a:hover { text-decoration: underline; }
         .location-note { font-size: 0.8rem; color: var(--light-text); font-style: italic; margin-bottom: 0.6rem; }
-        .location-time { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 0.95rem; padding: 0.5rem 0 0; }
+        .location-time { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 0.95rem; padding: 0.5rem 0; margin: 0.1rem -0.5rem; padding-left: 0.5rem; padding-right: 0.5rem; border-radius: 6px; transition: background 0.15s; }
+        .location-time:hover { background: var(--accent-tan); }
         .location-time input { width: 18px; height: 18px; accent-color: var(--primary-brown); cursor: pointer; flex-shrink: 0; }
         .address-link { color: inherit; text-decoration: none; }
         .address-link:hover { text-decoration: underline; }
@@ -156,19 +157,19 @@
                             })();
                         </script>
 
-                        <label class="location-card">
+                        <div class="location-card">
                             <div class="location-card-header">
                                 <span class="location-address"><a href="https://maps.app.goo.gl/DCa1x8vuQUtsp3mP8" target="_blank">55 Page Street, San Francisco</a> <span style="font-weight: 400; color: var(--light-text); font-size: 0.85rem;">(Hayes Valley)</span></span>
                             </div>
-                            <div class="location-time">
+                            <label class="location-time">
                                 <input type="radio" name="window" value="12PM - 1PM @ 55 Page St">
                                 <span>12PM – 1PM</span>
-                            </div>
-                            <div class="location-time">
+                            </label>
+                            <label class="location-time">
                                 <input type="radio" name="window" value="1PM - 2PM @ 55 Page St">
                                 <span>1PM – 2PM</span>
-                            </div>
-                        </label>
+                            </label>
+                        </div>
 
                         <label class="location-card" style="border-style: dashed; background: #faf8f5;">
                             <div class="location-time" style="padding: 0; align-items: flex-start; gap: 1rem;">
