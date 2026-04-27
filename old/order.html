@@ -382,18 +382,5 @@
         // Start with one default row
         addRow();
     </script>
-
-    <!-- Flyer code tracking: captures ?f= URL param from QR code scans -->
-    <script>
-        (function() {
-            var params = new URLSearchParams(window.location.search);
-            var flyerCode = params.get('f');
-            if (flyerCode) {
-                gtag('event', 'flyer_scan', {
-                    'f': flyerCode
-                });
-            }
-        })();
-    </script>
 </body>
 </html>
