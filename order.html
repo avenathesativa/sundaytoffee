@@ -107,10 +107,7 @@
             <div class="page-header">
                 <h1 class="page-title">place your order</h1>
                 <p style="color: var(--light-text); font-size: 0.95rem;">Buttery, crunchy toffee filled with almonds, covered in rich chocolate, and topped with toasted nuts.</p>
-                <p style="color: var(--light-text); font-size: 0.85rem; margin-top: 0.75rem; font-style: italic;">Orders by Saturday at 3PM help me plan ahead, but I'm flexible!</p>
-            </div>
-            <div class="info-box">
-                <p style="font-size: 0.9rem; color: var(--dark-text); line-height: 1.6;"><strong style="color: var(--primary-brown); font-weight: 500;">A small note on pricing —</strong> the cost of butter, chocolate, and nuts has climbed quite a bit recently, so I've had to adjust my prices slightly to keep Sunday Toffee going. I've tried to keep the increase as small as possible, and I'm so grateful for your continued support. Every order genuinely means the world to me. 🤎</p>
+                <p style="color: var(--light-text); font-size: 0.85rem; margin-top: 0.75rem; font-style: italic;">Mother's Day weekend pickup: Sat May 9 &amp; Sun May 10. Order soon so I can plan my batches!</p>
             </div>
             <form id="orderForm">
                 <div class="section">
@@ -143,37 +140,42 @@
                         </label>
                     </div>
                     <div id="pickupDetails" class="method-details active">
-                        <label style="margin-bottom: 0.75rem;">choose a pickup location & time (<span id="pickupDate"></span>)</label>
-                        <script>
-                            (function() {
-                                const today = new Date();
-                                const dayOfWeek = today.getDay();
-                                const daysUntilSunday = dayOfWeek === 0 ? 7 : (7 - dayOfWeek);
-                                const upcomingSunday = new Date(today);
-                                upcomingSunday.setDate(today.getDate() + daysUntilSunday);
-                                const options = { weekday: 'long', month: 'long', day: 'numeric' };
-                                document.getElementById('pickupDate').textContent = upcomingSunday.toLocaleDateString('en-US', options);
-                            })();
-                        </script>
+                        <label style="margin-bottom: 0.75rem;">choose a pickup day & time for Mother's Day weekend</label>
 
                         <div class="location-card">
                             <div class="location-card-header">
-                                <span class="location-address"><a href="https://maps.app.goo.gl/DCa1x8vuQUtsp3mP8" target="_blank">55 Page Street, San Francisco</a> <span style="font-weight: 400; color: var(--light-text); font-size: 0.85rem;">(Hayes Valley)</span></span>
+                                <span style="font-family: 'Libre Baskerville', serif; font-size: 1rem; color: var(--primary-brown);">Saturday, May 9</span>
+                            </div>
+                            <div style="font-size: 0.85rem; color: var(--light-text); margin-bottom: 0.5rem;">
+                                <a href="https://maps.app.goo.gl/DCa1x8vuQUtsp3mP8" target="_blank" style="color: var(--primary-brown); text-decoration: none;">55 Page Street, San Francisco</a> <span style="font-weight: 400; color: var(--light-text);">(Hayes Valley)</span>
                             </div>
                             <label class="location-time">
-                                <input type="radio" name="window" value="12PM - 1PM @ 55 Page St">
-                                <span>12PM – 1PM</span>
+                                <input type="radio" name="window" value="Sat May 9, 6PM - 8PM @ 55 Page St">
+                                <span>6PM – 8PM</span>
+                            </label>
+                        </div>
+
+                        <div class="location-card">
+                            <div class="location-card-header">
+                                <span style="font-family: 'Libre Baskerville', serif; font-size: 1rem; color: var(--primary-brown);">Sunday, May 10 — Mother's Day</span>
+                            </div>
+                            <div style="font-size: 0.85rem; color: var(--light-text); margin-bottom: 0.5rem;">
+                                <a href="https://maps.app.goo.gl/DCa1x8vuQUtsp3mP8" target="_blank" style="color: var(--primary-brown); text-decoration: none;">55 Page Street, San Francisco</a> <span style="font-weight: 400; color: var(--light-text);">(Hayes Valley)</span>
+                            </div>
+                            <label class="location-time">
+                                <input type="radio" name="window" value="Sun May 10, 9AM - 10AM @ 55 Page St">
+                                <span>9AM – 10AM</span>
                             </label>
                             <label class="location-time">
-                                <input type="radio" name="window" value="1PM - 2PM @ 55 Page St">
-                                <span>1PM – 2PM</span>
+                                <input type="radio" name="window" value="Sun May 10, 10AM - 11AM @ 55 Page St">
+                                <span>10AM – 11AM</span>
                             </label>
                         </div>
 
                         <label class="location-card" style="border-style: dashed; background: #faf8f5;">
                             <div class="location-time" style="padding: 0; align-items: flex-start; gap: 1rem;">
                                 <input type="radio" name="window" value="Flexible" style="margin-top: 3px;">
-                                <span>Sunday doesn't work for me<br><span style="font-size: 0.8rem; color: var(--light-text); font-style: italic;"><a href="sms:5106217820" style="color: var(--primary-brown); text-decoration: underline;">I'll text you to find another time!</a> (510-621-7820)</span></span>
+                                <span>Neither day works for me<br><span style="font-size: 0.8rem; color: var(--light-text); font-style: italic;">Message me on IG (<a href="https://instagram.com/sunday_toffee" target="_blank" style="color: var(--primary-brown); text-decoration: underline;">@sundaytoffee</a>) or <a href="sms:5106217820" style="color: var(--primary-brown); text-decoration: underline;">text me at 510-621-7820</a> to arrange a time for pick up</span></span>
                             </div>
                         </label>
                     </div>
@@ -305,12 +307,7 @@
         }
 
         function getUpcomingSunday() {
-            const today = new Date();
-            const dayOfWeek = today.getDay();
-            const daysUntilSunday = dayOfWeek === 0 ? 7 : (7 - dayOfWeek);
-            const upcomingSunday = new Date(today);
-            upcomingSunday.setDate(today.getDate() + daysUntilSunday);
-            return upcomingSunday.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+            return "Mother's Day Weekend — May 9-10, 2026";
         }
 
         function toggleMethod(m) {

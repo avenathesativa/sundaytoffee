@@ -175,40 +175,41 @@
             transform: scale(1.02);
         }
 
-        /* Valentine's - Subtle Pink */
-        .valentines {
-            background: #FDF5F3;
+        /* Mother's Day - Soft Lavender */
+        .mothers-day {
+            background: linear-gradient(135deg, #F5F3FA 0%, #EDE8F5 100%);
             border-radius: 12px;
             padding: 3rem;
             text-align: center;
-            margin: 3rem auto;
+            margin: 0 auto 3rem;
             max-width: 700px;
+            border: 1px solid #DDD6EC;
         }
 
-        .valentines .section-title {
-            color: #C4847A;
+        .mothers-day .section-title {
+            color: #7B6B8A;
         }
 
-        .valentines p {
+        .mothers-day p {
             color: var(--light-text);
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             font-size: 0.95rem;
         }
 
-        .valentines img {
-            max-width: 100%;
-            width: 450px;
-            border-radius: 8px;
-            margin-bottom: 2rem;
+        .mothers-day .pickup-details {
+            font-size: 0.88rem;
+            color: var(--light-text);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
         }
 
-        .btn-valentine {
-            background-color: #C4847A;
+        .btn-mothers-day {
+            background-color: #7B6B8A;
             color: white;
         }
 
-        .btn-valentine:hover {
-            background-color: #B07369;
+        .btn-mothers-day:hover {
+            background-color: #695A78;
         }
 
         /* About Section */
@@ -384,12 +385,25 @@
         </div>
     </section>
 
+    <section style="padding: 0 8%; max-width: 1100px; margin: 0 auto;">
+        <div class="mothers-day fade-in">
+            <h2 class="section-title">Mother's Day Toffee</h2>
+            <p>Treat Mom to something sweet this Mother's Day — handmade toffee, made with love.</p>
+            <div class="pickup-details">
+                <strong style="color: #7B6B8A;">Pickup available:</strong><br>
+                Saturday, May 9: 6PM - 8PM<br>
+                Sunday, May 10: 9AM - 11AM
+            </div>
+            <a href="order.html" class="btn btn-mothers-day">order for mom</a>
+        </div>
+    </section>
+
     <section id="products">
         <h2 class="section-title fade-in" style="text-align: center;">what i make</h2>
         <p class="section-subtitle fade-in" style="text-align: center;">Simple recipes, quality ingredients.</p>
 
         <div class="product-photo fade-in">
-            <img src="images/better%20toffee%20picture.png" alt="Sunday Toffee - open box showing chocolate almond toffee pieces">
+            <img src="images/brown-box.png" alt="Sunday Toffee - brown box of toffee">
         </div>
     </section>
 
