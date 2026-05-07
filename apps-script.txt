@@ -182,13 +182,13 @@ function doPost(e) {
     }
 
     // Determine which pickup location was selected
-    var isPageSt = pickupTime && pickupTime.indexOf('55 Page St') > -1;
+    var isPageSt = pickupTime && (pickupTime.indexOf('49 Page St') > -1 || pickupTime.indexOf('55 Page St') > -1);
     var isMarketSt = pickupTime && pickupTime.indexOf('3639 Market St') > -1;
 
     // "I'm here" link
     var arrivedLink = "https://sundaytoffee.com/arrived.html?name=" + encodeURIComponent(data.name);
 
-    // Extract the time window from the pickup value (e.g. "2PM - 3PM @ 3639 Market St" → "2PM – 3PM")
+    // Extract the time window from the pickup value (e.g. "Sun May 10, 9AM - 10AM @ 49 Page St" → "Sun May 10, 9AM – 10AM")
     var timeWindowText = '';
     if (pickupTime === "Flexible") {
       timeWindowText = 'Flexible';
@@ -205,9 +205,11 @@ function doPost(e) {
     } else if (pickupTime === "Flexible") {
       fulfillmentPlainText = "Fulfillment: TBD — I'll text you to arrange a time!";
     } else if (isPageSt) {
-      fulfillmentPlainText = "Fulfillment: Pickup at 55 Page Street, San Francisco (https://maps.app.goo.gl/DCa1x8vuQUtsp3mP8)\n\nDay & Time: " + pickupDay + " during " + timeWindowText + "\n\nWhen you arrive, tap this link to let me know you're here: " + arrivedLink;
+      var dayTimeText = pickupDay ? (pickupDay + " during " + timeWindowText) : timeWindowText;
+      fulfillmentPlainText = "Fulfillment: Pickup at 49 Page Street, San Francisco (https://maps.app.goo.gl/4u7NvfRjpSTBi9Fz8)\n\nDay & Time: " + dayTimeText + "\n\nWhen you arrive, tap this link to let me know you're here: " + arrivedLink;
     } else {
-      fulfillmentPlainText = "Fulfillment: Pickup at 3639 Market Street, San Francisco (https://maps.app.goo.gl/P2sAxcqiENHMZJe37) - ring the first doorbell when you get here! If you are driving, feel free to temporarily park in front of the driveway for quick pick up.\n\nDay & Time: " + pickupDay + " during " + timeWindowText;
+      var dayTimeText = pickupDay ? (pickupDay + " during " + timeWindowText) : timeWindowText;
+      fulfillmentPlainText = "Fulfillment: Pickup at 49 Page Street, San Francisco (https://maps.app.goo.gl/4u7NvfRjpSTBi9Fz8)\n\nDay & Time: " + dayTimeText;
     }
 
     // HTML version
@@ -217,15 +219,17 @@ function doPost(e) {
     } else if (pickupTime === "Flexible") {
       fulfillmentHTML = "<p><strong>Day & Time:</strong> TBD &mdash; I'll text you to arrange a time!</p>";
     } else if (isPageSt) {
-      fulfillmentHTML = "<p><strong>Fulfillment:</strong> Pickup at <a href='https://maps.app.goo.gl/DCa1x8vuQUtsp3mP8'>55 Page Street, San Francisco</a></p>" +
-        "<p><strong>Day & Time:</strong> " + pickupDay + " during " + timeWindowText + "</p>" +
+      var dayTimeHTML = pickupDay ? (pickupDay + " during " + timeWindowText) : timeWindowText;
+      fulfillmentHTML = "<p><strong>Fulfillment:</strong> Pickup at <a href='https://maps.app.goo.gl/4u7NvfRjpSTBi9Fz8'>49 Page Street, San Francisco</a></p>" +
+        "<p><strong>Day & Time:</strong> " + dayTimeHTML + "</p>" +
         "<div style='margin: 24px 0; text-align: center; background: #faf8f5; border-radius: 10px; padding: 20px;'>" +
         "<p style='font-size: 14px; color: #786043; margin: 0 0 12px; font-weight: 500;'>When you arrive, tap the button below to let me know:</p>" +
         "<a href='" + arrivedLink + "' style='display: inline-block; padding: 16px 32px; background-color: #E8740C; color: white; text-decoration: none; border-radius: 8px; font-size: 17px; font-weight: 600; letter-spacing: 0.02em;'>I&rsquo;m here for pickup!</a>" +
         "</div>";
     } else {
-      fulfillmentHTML = "<p><strong>Fulfillment:</strong> Pickup at <a href='https://maps.app.goo.gl/EZmuY7BPceEqVesBA'>3639 Market Street, San Francisco</a> &mdash; ring the first doorbell when you get here! If you are driving, feel free to temporarily park in front of the driveway for quick pick up.</p>" +
-        "<p><strong>Day & Time:</strong> " + pickupDay + " during " + timeWindowText + "</p>";
+      var dayTimeHTML = pickupDay ? (pickupDay + " during " + timeWindowText) : timeWindowText;
+      fulfillmentHTML = "<p><strong>Fulfillment:</strong> Pickup at <a href='https://maps.app.goo.gl/4u7NvfRjpSTBi9Fz8'>49 Page Street, San Francisco</a></p>" +
+        "<p><strong>Day & Time:</strong> " + dayTimeHTML + "</p>";
     }
 
     var messagePlainText = "Hi " + data.name + ",\n\n" +
@@ -408,10 +412,10 @@ function sendPickupReminders(testMode) {
 
     // Determine pickup location details
     var pickupTime = (order.pickupTime || '').toString();
-    var isPageSt = pickupTime.indexOf('55 Page St') > -1;
+    var isPageSt = pickupTime.indexOf('49 Page St') > -1 || pickupTime.indexOf('55 Page St') > -1;
     var isFlexible = pickupTime === 'Flexible';
 
-    // Extract time window from the pickup value (e.g. "2PM - 3PM @ 3639 Market St" → "2PM – 3PM")
+    // Extract time window from the pickup value (e.g. "2PM - 3PM @ 49 Page St" → "2PM – 3PM")
     var timeWindow = '';
     if (isFlexible) {
       timeWindow = 'Flexible';
@@ -424,14 +428,15 @@ function sendPickupReminders(testMode) {
 
     var locationName, locationLink;
     if (isPageSt) {
-      locationName = '55 Page Street, San Francisco (Hayes Valley)';
-      locationLink = 'https://maps.app.goo.gl/DCa1x8vuQUtsp3mP8';
+      locationName = '49 Page Street, San Francisco (Hayes Valley)';
+      locationLink = 'https://maps.app.goo.gl/4u7NvfRjpSTBi9Fz8';
     } else if (isFlexible) {
       locationName = 'TBD';
       locationLink = '';
     } else {
-      locationName = '3639 Market Street, San Francisco (Eureka Valley)';
-      locationLink = 'https://maps.app.goo.gl/EZmuY7BPceEqVesBA';
+      // Default fallback — also 49 Page St now
+      locationName = '49 Page Street, San Francisco (Hayes Valley)';
+      locationLink = 'https://maps.app.goo.gl/4u7NvfRjpSTBi9Fz8';
     }
 
     // "I'm here" link
