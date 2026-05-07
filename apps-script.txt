@@ -205,11 +205,9 @@ function doPost(e) {
     } else if (pickupTime === "Flexible") {
       fulfillmentPlainText = "Fulfillment: TBD — I'll text you to arrange a time!";
     } else if (isPageSt) {
-      var dayTimeText = pickupDay ? (pickupDay + " during " + timeWindowText) : timeWindowText;
-      fulfillmentPlainText = "Fulfillment: Pickup at 49 Page Street, San Francisco (https://maps.app.goo.gl/4u7NvfRjpSTBi9Fz8)\n\nDay & Time: " + dayTimeText + "\n\nWhen you arrive, tap this link to let me know you're here: " + arrivedLink;
+      fulfillmentPlainText = "Fulfillment: Pickup at 49 Page Street, San Francisco (https://maps.app.goo.gl/4u7NvfRjpSTBi9Fz8)\n\nDay & Time: " + timeWindowText + "\n\nWhen you arrive, tap this link to let me know you're here: " + arrivedLink;
     } else {
-      var dayTimeText = pickupDay ? (pickupDay + " during " + timeWindowText) : timeWindowText;
-      fulfillmentPlainText = "Fulfillment: Pickup at 49 Page Street, San Francisco (https://maps.app.goo.gl/4u7NvfRjpSTBi9Fz8)\n\nDay & Time: " + dayTimeText;
+      fulfillmentPlainText = "Fulfillment: Pickup at 49 Page Street, San Francisco (https://maps.app.goo.gl/4u7NvfRjpSTBi9Fz8)\n\nDay & Time: " + timeWindowText;
     }
 
     // HTML version
@@ -219,17 +217,15 @@ function doPost(e) {
     } else if (pickupTime === "Flexible") {
       fulfillmentHTML = "<p><strong>Day & Time:</strong> TBD &mdash; I'll text you to arrange a time!</p>";
     } else if (isPageSt) {
-      var dayTimeHTML = pickupDay ? (pickupDay + " during " + timeWindowText) : timeWindowText;
       fulfillmentHTML = "<p><strong>Fulfillment:</strong> Pickup at <a href='https://maps.app.goo.gl/4u7NvfRjpSTBi9Fz8'>49 Page Street, San Francisco</a></p>" +
-        "<p><strong>Day & Time:</strong> " + dayTimeHTML + "</p>" +
+        "<p><strong>Day & Time:</strong> " + timeWindowText + "</p>" +
         "<div style='margin: 24px 0; text-align: center; background: #faf8f5; border-radius: 10px; padding: 20px;'>" +
         "<p style='font-size: 14px; color: #786043; margin: 0 0 12px; font-weight: 500;'>When you arrive, tap the button below to let me know:</p>" +
         "<a href='" + arrivedLink + "' style='display: inline-block; padding: 16px 32px; background-color: #E8740C; color: white; text-decoration: none; border-radius: 8px; font-size: 17px; font-weight: 600; letter-spacing: 0.02em;'>I&rsquo;m here for pickup!</a>" +
         "</div>";
     } else {
-      var dayTimeHTML = pickupDay ? (pickupDay + " during " + timeWindowText) : timeWindowText;
       fulfillmentHTML = "<p><strong>Fulfillment:</strong> Pickup at <a href='https://maps.app.goo.gl/4u7NvfRjpSTBi9Fz8'>49 Page Street, San Francisco</a></p>" +
-        "<p><strong>Day & Time:</strong> " + dayTimeHTML + "</p>";
+        "<p><strong>Day & Time:</strong> " + timeWindowText + "</p>";
     }
 
     var messagePlainText = "Hi " + data.name + ",\n\n" +

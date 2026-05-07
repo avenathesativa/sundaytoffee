@@ -313,6 +313,14 @@
         }
 
         function getUpcomingSunday() {
+            // Extract just the day from the selected pickup window
+            // e.g. "Sun May 10, 9AM - 10AM @ 49 Page St" → "Sun May 10"
+            var selected = document.querySelector('input[name="window"]:checked');
+            if (selected && selected.value !== 'Flexible') {
+                var beforeAt = selected.value.split(' @ ')[0]; // "Sun May 10, 9AM - 10AM"
+                var dayPart = beforeAt.split(',')[0].trim();    // "Sun May 10"
+                return dayPart;
+            }
             return "";
         }
 
