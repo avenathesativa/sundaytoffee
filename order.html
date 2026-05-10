@@ -107,7 +107,7 @@
             <div class="page-header">
                 <h1 class="page-title">place your order</h1>
                 <p style="color: var(--light-text); font-size: 0.95rem;">Buttery, crunchy toffee filled with almonds, covered in rich chocolate, and topped with toasted nuts.</p>
-                <p style="color: var(--light-text); font-size: 0.85rem; margin-top: 0.75rem; font-style: italic;">Mother's Day weekend pickup: Sat May 9 &amp; Sun May 10. Order soon so I can plan my batches!</p>
+                <p style="color: var(--light-text); font-size: 0.85rem; margin-top: 0.75rem; font-style: italic;">I'm on vacation until June! Next pickup: Sunday, June 7th.</p>
             </div>
             <form id="orderForm">
                 <div class="section">
@@ -140,41 +140,24 @@
                         </label>
                     </div>
                     <div id="pickupDetails" class="method-details active">
-                        <label style="margin-bottom: 0.75rem;">choose a pickup day & time for Mother's Day weekend</label>
+                        <label style="margin-bottom: 0.75rem;">choose a pickup time</label>
 
                         <p style="font-size: 0.85rem; color: var(--light-text); font-style: italic; margin-bottom: 0.75rem;">I'll be set up outside in front of the building — just look for me!</p>
 
                         <div class="location-card">
                             <div class="location-card-header">
-                                <span style="font-family: 'Libre Baskerville', serif; font-size: 1rem; color: var(--primary-brown);">Saturday, May 9</span>
+                                <span style="font-family: 'Libre Baskerville', serif; font-size: 1rem; color: var(--primary-brown);">Sunday, June 7</span>
                             </div>
                             <div style="font-size: 0.85rem; color: var(--light-text); margin-bottom: 0.5rem;">
                                 <a href="https://maps.app.goo.gl/jBboNAgsV6mkq5ro6" target="_blank" style="color: var(--primary-brown); text-decoration: none;">49 Page Street, San Francisco</a> <span style="font-weight: 400; color: var(--light-text);">(Hayes Valley)</span>
                             </div>
                             <label class="location-time">
-                                <input type="radio" name="window" value="Sat May 9, 10AM - 11AM @ 49 Page St">
+                                <input type="radio" name="window" value="Sun Jun 7, 10AM - 11AM @ 49 Page St">
                                 <span>10AM – 11AM</span>
                             </label>
                             <label class="location-time">
-                                <input type="radio" name="window" value="Sat May 9, 11AM - 12PM @ 49 Page St">
+                                <input type="radio" name="window" value="Sun Jun 7, 11AM - 12PM @ 49 Page St">
                                 <span>11AM – 12PM</span>
-                            </label>
-                        </div>
-
-                        <div class="location-card">
-                            <div class="location-card-header">
-                                <span style="font-family: 'Libre Baskerville', serif; font-size: 1rem; color: var(--primary-brown);">Sunday, May 10 — Mother's Day</span>
-                            </div>
-                            <div style="font-size: 0.85rem; color: var(--light-text); margin-bottom: 0.5rem;">
-                                <a href="https://maps.app.goo.gl/jBboNAgsV6mkq5ro6" target="_blank" style="color: var(--primary-brown); text-decoration: none;">49 Page Street, San Francisco</a> <span style="font-weight: 400; color: var(--light-text);">(Hayes Valley)</span>
-                            </div>
-                            <label class="location-time">
-                                <input type="radio" name="window" value="Sun May 10, 8AM - 9AM @ 49 Page St">
-                                <span>8AM – 9AM</span>
-                            </label>
-                            <label class="location-time">
-                                <input type="radio" name="window" value="Sun May 10, 9AM - 10AM @ 49 Page St">
-                                <span>9AM – 10AM</span>
                             </label>
                         </div>
 
@@ -224,7 +207,7 @@
         </div>
     </div>
     <script>
-        const PRICES = { '8 oz': 15 };
+        const PRICES = { '8 oz': 13.50 };
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwT-mQefx2FonndoDe81zB0WGZJAh3A-s0Cc3nX5e6hmg0BN9KnEIrc4nqjpoWLqkZBSg/exec';
         let rowId = 0;
 
@@ -240,7 +223,7 @@
                 <div class="order-row-top">
                     <div class="order-row-info">
                         <h3>8 oz box</h3>
-                        <p data-field="price">$15</p>
+                        <p data-field="price">$13.50</p>
                     </div>
                     <div class="order-row-controls">
                         <div class="qty-controls">
