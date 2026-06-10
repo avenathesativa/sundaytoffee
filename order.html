@@ -152,7 +152,7 @@
                                 <a href="https://maps.app.goo.gl/jBboNAgsV6mkq5ro6" target="_blank" style="color: var(--primary-brown); text-decoration: none;">49 Page Street, San Francisco</a> <span style="font-weight: 400; color: var(--light-text);">(Hayes Valley)</span>
                             </div>
                             <label class="location-time">
-                                <input type="radio" name="window" value="Sun Jun 28, 10AM - 11AM @ 49 Page St">
+                                <input type="radio" name="window" value="Sun Jun 28, 10AM - 11AM @ 49 Page St" required>
                                 <span>10AM – 11AM</span>
                             </label>
                         </div>
@@ -310,9 +310,10 @@
             if (m === 'pickup') {
                 pickupDetails.classList.add('active'); deliveryDetails.classList.remove('active');
                 addressField.required = false; addressField.value = '';
+                document.querySelector('input[name="window"]').required = true;
             } else {
                 pickupDetails.classList.remove('active'); deliveryDetails.classList.add('active');
-                addressField.required = true; document.querySelectorAll('input[name="window"]').forEach(i => i.checked = false);
+                addressField.required = true; document.querySelectorAll('input[name="window"]').forEach(i => { i.checked = false; i.required = false; });
             }
         }
 
