@@ -138,7 +138,7 @@
                         </label>
                         <label class="radio-option" id="deliveryLabel" style="opacity: 0.4; cursor: not-allowed;">
                             <input type="radio" name="method" id="deliveryRadio" value="Delivery" onclick="toggleMethod('delivery')" disabled> 
-                            <span>Delivery (Free and available for orders $50+ in San Francisco)</span>
+                            <span>Delivery (Free for orders of 4+ boxes in San Francisco)</span>
                         </label>
                     </div>
                     <div id="pickupDetails" class="method-details active">
@@ -203,7 +203,7 @@
         </div>
     </div>
     <script>
-        const PRICES = { '8 oz': 13 };
+        const PRICES = { '8 oz': 14 };
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwT-mQefx2FonndoDe81zB0WGZJAh3A-s0Cc3nX5e6hmg0BN9KnEIrc4nqjpoWLqkZBSg/exec';
         let rowId = 0;
 
@@ -219,7 +219,7 @@
                 <div class="order-row-top">
                     <div class="order-row-info">
                         <h3>8 oz box</h3>
-                        <p data-field="price">$13</p>
+                        <p data-field="price">$14</p>
                     </div>
                     <div class="order-row-controls">
                         <div class="qty-controls">
@@ -283,7 +283,8 @@
             document.getElementById('total-display').textContent = `$${total}`;
             const radio = document.getElementById('deliveryRadio');
             const label = document.getElementById('deliveryLabel');
-            if (total >= 50) {
+            const totalBoxes = rows.reduce((sum, r) => sum + r.qty, 0);
+            if (totalBoxes >= 4) {
                 radio.disabled = false; label.style.opacity = '1'; label.style.cursor = 'pointer';
             } else {
                 if (radio.checked) { document.querySelector('input[value="Pickup"]').checked = true; toggleMethod('pickup'); }

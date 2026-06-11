@@ -322,6 +322,29 @@ function getUpcomingSundayString() {
 
 
 // ============================================================
+// HELPER: Normalize a pickup day to "Month Day" (e.g. "June 28")
+// Handles Date objects, "Sunday, June 28", and "Sun Jun 28"
+// ============================================================
+function normalizePickupDay(value) {
+  var monthsFull = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  if (value instanceof Date) {
+    return monthsFull[value.getMonth()] + ' ' + value.getDate();
+  }
+  var s = (value || '').toString().trim();
+  if (!s) return '';
+  s = s.replace(/^[A-Za-z]+,?\s+/, '');   // drop weekday prefix ("Sunday, " or "Sun ")
+  var parts = s.split(/\s+/);
+  if (parts.length < 2) return s;
+  var monPrefix = parts[0].substring(0, 3).toLowerCase();
+  var monthName = parts[0];
+  for (var i = 0; i < monthsFull.length; i++) {
+    if (monthsFull[i].toLowerCase().indexOf(monPrefix) === 0) { monthName = monthsFull[i]; break; }
+  }
+  return monthName + ' ' + parseInt(parts[1], 10);
+}
+
+
+// ============================================================
 // HELPER: Get all orders for a specific pickup day string
 // Returns array of order objects
 // ============================================================
@@ -330,22 +353,14 @@ function getOrdersForDay(pickupDayString) {
   var sheet = ss.getSheetByName('Toffee Orders');
   var allData = sheet.getDataRange().getValues();
   var orders = [];
+  var target = normalizePickupDay(pickupDayString);
 
   for (var i = 1; i < allData.length; i++) {
     var rawValue = allData[i][14];
 
-    // Normalize: Sheets may store the pickup day as a Date object or a string
-    var rowPickupDay;
-    if (rawValue instanceof Date) {
-      var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-      var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-      rowPickupDay = days[rawValue.getDay()] + ', ' + months[rawValue.getMonth()] + ' ' + rawValue.getDate();
-    } else {
-      rowPickupDay = (rawValue || '').toString().trim();
-    }
-
-    // Match against the pickup day string (e.g. "Sunday, April 5")
-    if (rowPickupDay === pickupDayString) {
+    // Match on normalized "Month Day" so Date cells, "Sunday, June 28",
+    // and "Sun Jun 28" all compare equal
+    if (normalizePickupDay(rawValue) === target) {
       orders.push({
         name: allData[i][1],
         email: allData[i][2],
@@ -376,6 +391,11 @@ function getOrdersForDay(pickupDayString) {
 // Set up a time-driven trigger to run this every Sunday at 8 AM PT
 // ============================================================
 function sendPickupReminders(testMode) {
+  // IMPORTANT: time-driven triggers pass an event object as the first argument,
+  // which is truthy. Only treat this as a test run if explicitly called with `true`,
+  // otherwise scheduled runs would redirect every reminder to you instead of customers.
+  var isTest = (testMode === true);
+
   var sundayStr = getUpcomingSundayString();
   var orders = getOrdersForDay(sundayStr);
 
@@ -507,9 +527,9 @@ function sendPickupReminders(testMode) {
     };
     if (fromAlias) emailOptions.from = fromAlias;
 
-    var sendTo = testMode ? 'avenajiajia@gmail.com' : order.email;
+    var sendTo = isTest ? 'avenajiajia@gmail.com' : order.email;
     GmailApp.sendEmail(sendTo, subject, plainText, emailOptions);
-    Logger.log((testMode ? '[TEST] ' : '') + 'Sent reminder to ' + order.name + ' (' + sendTo + ')');
+    Logger.log((isTest ? '[TEST] ' : '') + 'Sent reminder to ' + order.name + ' (' + sendTo + ')');
   }
 
   Logger.log('Finished sending ' + orders.length + ' reminders for ' + sundayStr);
