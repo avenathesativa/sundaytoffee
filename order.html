@@ -107,9 +107,6 @@
             <div class="page-header">
                 <h1 class="page-title">place your order</h1>
                 <p style="color: var(--light-text); font-size: 0.95rem;">Buttery, crunchy toffee filled with almonds, covered in rich chocolate, and topped with toasted nuts.</p>
-                <div style="background: #F5E6D3; border-radius: 8px; padding: 1rem 1.25rem; margin-top: 1.25rem; text-align: center;">
-                    <p style="color: var(--primary-brown); font-size: 0.95rem; font-weight: 500;">Next pickup is <strong>Sunday, August 23rd</strong> — place an order now and I'll send you a reminder when pickup day is near!</p>
-                </div>
             </div>
             <form id="orderForm">
                 <div class="section">
@@ -133,50 +130,20 @@
                     <h2 class="section-title">how to get it</h2>
                     <div class="radio-group">
                         <label class="radio-option">
-                            <input type="radio" name="method" value="Pickup" required onclick="toggleMethod('pickup')" checked>
+                            <input type="radio" name="method" value="Pickup" required checked>
                             <span>Pickup (San Francisco)</span>
-                        </label>
-                        <label class="radio-option" id="deliveryLabel" style="opacity: 0.4; cursor: not-allowed;">
-                            <input type="radio" name="method" id="deliveryRadio" value="Delivery" onclick="toggleMethod('delivery')" disabled> 
-                            <span>Delivery (Free for orders of 4+ boxes in San Francisco)</span>
                         </label>
                     </div>
                     <div id="pickupDetails" class="method-details active">
-                        <label style="margin-bottom: 0.75rem;">choose a pickup time</label>
+                        <label style="margin-bottom: 0.75rem;">pickup time</label>
 
-                        <div class="location-card">
-                            <div class="location-card-header">
-                                <span style="font-family: 'Libre Baskerville', serif; font-size: 1rem; color: var(--primary-brown);">Sunday, August 23</span>
-                            </div>
-                            <div style="font-size: 0.85rem; color: var(--light-text); margin-bottom: 0.5rem;">
-                                <a href="https://maps.app.goo.gl/jBboNAgsV6mkq5ro6" target="_blank" style="color: var(--primary-brown); text-decoration: none;">49 Page Street, San Francisco</a> <span style="font-weight: 400; color: var(--light-text);">(Hayes Valley)</span>
-                            </div>
-                            <label class="location-time">
-                                <input type="radio" name="window" value="Sun Aug 23, 10AM - 11AM @ 49 Page St" required>
-                                <span>10AM – 11AM</span>
-                            </label>
-                        </div>
 
                         <label class="location-card" style="border-style: dashed; background: #faf8f5;">
                             <div class="location-time" style="padding: 0; align-items: flex-start; gap: 1rem;">
-                                <input type="radio" name="window" value="Flexible" style="margin-top: 3px;">
-                                <span>None of these times work for me<br><span style="font-size: 0.8rem; color: var(--light-text); font-style: italic;">Message me on IG (<a href="https://instagram.com/sunday_toffee" target="_blank" style="color: var(--primary-brown); text-decoration: underline;">@sundaytoffee</a>) or <a href="sms:5106217820" style="color: var(--primary-brown); text-decoration: underline;">text me at 510-621-7820</a> to arrange a time for pick up. I am usually free on weekdays before 3PM or after 6PM :)</span></span>
+                                <input type="radio" name="window" value="Flexible" checked style="display: none;">
+                                <span>Order anytime — we'll pick a time that works for you<br><span style="font-size: 0.8rem; color: var(--light-text); font-style: italic;">After you order, message me on IG (<a href="https://instagram.com/sunday_toffee" target="_blank" style="color: var(--primary-brown); text-decoration: underline;">@sundaytoffee</a>) or <a href="sms:5106217820" style="color: var(--primary-brown); text-decoration: underline;">text me at 510-621-7820</a> to arrange a time for pick up. I am usually free on weekdays before 3PM or after 6PM :)</span></span>
                             </div>
                         </label>
-                    </div>
-                    <div id="deliveryDetails" class="method-details">
-                        <div class="form-group">
-                            <label>delivery address</label>
-                            <p style="font-size: 0.85rem; color: var(--light-text); margin-bottom: 0.5rem;">Your order qualifies for free delivery in San Francisco!</p>
-                            <textarea id="address" placeholder="Enter your San Francisco address"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>delivery window</label>
-                            <p style="font-size: 0.85rem; color: var(--light-text); margin-bottom: 0.75rem; font-style: italic;">Deliveries happen between 12–1:30PM so I can be back for afternoon pickups!</p>
-                            <div class="radio-group">
-                                <label class="radio-option" style="border: 1px dashed rgba(164, 130, 100, 0.4); background: #faf8f5; align-items: flex-start; padding: 0.85rem 1.25rem; gap: 1rem;"><input type="radio" name="deliveryWindow" value="Flexible" style="margin-top: 3px; flex-shrink: 0;"> <span>That time doesn't work for me<br><span style="font-size: 0.8rem; color: var(--light-text); font-style: italic;"><a href="sms:5106217820" style="color: var(--primary-brown); text-decoration: underline;">I'll text you to coordinate!</a> (510-621-7820)</span></span></label>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="section">
@@ -203,7 +170,7 @@
         </div>
     </div>
     <script>
-        const PRICES = { '8 oz': 14 };
+        const PRICES = { '8 oz': 15 };
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwT-mQefx2FonndoDe81zB0WGZJAh3A-s0Cc3nX5e6hmg0BN9KnEIrc4nqjpoWLqkZBSg/exec';
         let rowId = 0;
 
@@ -219,7 +186,7 @@
                 <div class="order-row-top">
                     <div class="order-row-info">
                         <h3>8 oz box</h3>
-                        <p data-field="price">$14</p>
+                        <p data-field="price">$15</p>
                     </div>
                     <div class="order-row-controls">
                         <div class="qty-controls">
@@ -281,15 +248,6 @@
             const rows = getRows();
             const total = rows.reduce((sum, r) => sum + PRICES[r.size] * r.qty, 0);
             document.getElementById('total-display').textContent = `$${total}`;
-            const radio = document.getElementById('deliveryRadio');
-            const label = document.getElementById('deliveryLabel');
-            const totalBoxes = rows.reduce((sum, r) => sum + r.qty, 0);
-            if (totalBoxes >= 4) {
-                radio.disabled = false; label.style.opacity = '1'; label.style.cursor = 'pointer';
-            } else {
-                if (radio.checked) { document.querySelector('input[value="Pickup"]').checked = true; toggleMethod('pickup'); }
-                radio.disabled = true; label.style.opacity = '0.4'; label.style.cursor = 'not-allowed';
-            }
         }
 
         function getUpcomingSunday() {
@@ -304,19 +262,6 @@
             return "";
         }
 
-        function toggleMethod(m) {
-            const pickupDetails = document.getElementById('pickupDetails');
-            const deliveryDetails = document.getElementById('deliveryDetails');
-            const addressField = document.getElementById('address');
-            if (m === 'pickup') {
-                pickupDetails.classList.add('active'); deliveryDetails.classList.remove('active');
-                addressField.required = false; addressField.value = '';
-                document.querySelector('input[name="window"]').required = true;
-            } else {
-                pickupDetails.classList.remove('active'); deliveryDetails.classList.add('active');
-                addressField.required = true; document.querySelectorAll('input[name="window"]').forEach(i => { i.checked = false; i.required = false; });
-            }
-        }
 
         document.getElementById('orderForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -324,8 +269,7 @@
             const total = rows.reduce((sum, r) => sum + PRICES[r.size] * r.qty, 0);
             if (total === 0 || rows.length === 0) { alert('Add at least one box!'); return; }
             const method = document.querySelector('input[name="method"]:checked').value;
-            const address = document.getElementById('address').value;
-            if (method === 'Delivery' && (!address || address.trim() === '')) { alert('Please enter a delivery address.'); return; }
+            const address = '';
             const btn = document.getElementById('submitBtn'); btn.disabled = true; btn.textContent = 'submitting...';
             const name = document.getElementById('name').value;
             const pickupWindow = document.querySelector('input[name="window"]:checked')?.value || 'N/A';

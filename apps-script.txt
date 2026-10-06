@@ -203,7 +203,7 @@ function doPost(e) {
     if (data.method === "Delivery") {
       fulfillmentPlainText = "Fulfillment: Delivery to " + data.address;
     } else if (pickupTime === "Flexible") {
-      fulfillmentPlainText = "Fulfillment: TBD — I'll text you to arrange a time!";
+      fulfillmentPlainText = "Fulfillment: TBD — message me on IG (@sunday_toffee) or text me at 510-621-7820 to arrange a pickup time!";
     } else if (isPageSt) {
       fulfillmentPlainText = "Fulfillment: Pickup at 49 Page Street, San Francisco (https://maps.app.goo.gl/4u7NvfRjpSTBi9Fz8)\n\nDay & Time: " + timeWindowText + "\n\nWhen you arrive, tap this link to let me know you're here: " + arrivedLink;
     } else {
@@ -215,7 +215,7 @@ function doPost(e) {
     if (data.method === "Delivery") {
       fulfillmentHTML = "<p><strong>Fulfillment:</strong> Delivery to " + data.address + "</p>";
     } else if (pickupTime === "Flexible") {
-      fulfillmentHTML = "<p><strong>Day & Time:</strong> TBD &mdash; I'll text you to arrange a time!</p>";
+      fulfillmentHTML = "<p><strong>Day & Time:</strong> TBD &mdash; message me on IG (<a href='https://instagram.com/sunday_toffee' style='color: #786043;'>@sunday_toffee</a>) or <a href='sms:5106217820' style='color: #786043;'>text me at 510-621-7820</a> to arrange a pickup time!</p>";
     } else if (isPageSt) {
       fulfillmentHTML = "<p><strong>Fulfillment:</strong> Pickup at <a href='https://maps.app.goo.gl/4u7NvfRjpSTBi9Fz8'>49 Page Street, San Francisco</a></p>" +
         "<p><strong>Day & Time:</strong> " + timeWindowText + "</p>" +
